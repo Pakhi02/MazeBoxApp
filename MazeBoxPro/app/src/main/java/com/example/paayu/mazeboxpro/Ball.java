@@ -20,6 +20,7 @@ public class Ball extends View {
             super(context);
         sBallDiameter = diam;
         sBallDiameter2 = diam*diam;
+        setBackgroundResource(R.drawable.ball);
         }
 
         public Ball(Context context, AttributeSet attrs) {
