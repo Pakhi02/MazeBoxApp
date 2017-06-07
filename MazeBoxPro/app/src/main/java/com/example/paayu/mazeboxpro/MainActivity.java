@@ -1,16 +1,16 @@
 package com.example.paayu.mazeboxpro;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.PowerManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private SensorManager mSensorManager;
     private PowerManager mPowerManager;
@@ -41,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
                 .getName());
 
 
-        GameManager gameManager = new GameManager();
+        GameManager gameManager = new GameManager(this);
         mSensorManager.registerListener(gameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);
+
     }
 
 }
