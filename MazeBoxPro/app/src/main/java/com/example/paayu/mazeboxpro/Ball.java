@@ -12,9 +12,14 @@ public class Ball extends View {
         private float mPosY = (float) Math.random();
         private float mVelX;
         private float mVelY;
+        private float sBallDiameter;
+        private float sBallDiameter2;
 
-        public Ball(Context context) {
+
+    public Ball(Context context, float diam) {
             super(context);
+        sBallDiameter = diam;
+        sBallDiameter2 = diam*diam;
         }
 
         public Ball(Context context, AttributeSet attrs) {
