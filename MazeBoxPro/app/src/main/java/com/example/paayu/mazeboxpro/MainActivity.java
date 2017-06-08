@@ -15,7 +15,7 @@ public class MainActivity extends Activity {
     public SensorManager mSensorManager;
     private PowerManager mPowerManager;
     private WindowManager mWindowManager;
-    private Display mDisplay;
+    public Display mDisplay;
     private PowerManager.WakeLock mWakeLock;
     public Sensor mAccelerometer;
     private GameManager mGameManager;
@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 
 
         mGameManager = new GameManager(this);
-        //mSensorManager.registerListener(gameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(mGameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);
 
     }
 
@@ -58,8 +58,22 @@ public class MainActivity extends Activity {
         mWakeLock.acquire();
 
         // Start the simulation
-        mSensorManager.registerListener(mGameManager,mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        mGameManager.startSimulation();
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        /*
+         * When the activity is paused, we make sure to stop the simulation,
+         * release our sensor resources and wake locks
+         */
+
+        // Stop the simulation
+        mGameManager.stopSimulation();
+
+        // and release our wake-lock
+        mWakeLock.release();
+    }
 }

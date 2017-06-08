@@ -3,20 +3,21 @@ package com.example.paayu.mazeboxpro;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.view.Surface;
 import android.view.ViewGroup;
 import android.view.ViewGroup;
 import android.util.DisplayMetrics;
+import android.widget.FrameLayout;
 
-/**
- * Created by labuser on 6/7/17.
- */
 
-public class GameManager implements SensorEventListener{
+public class GameManager extends FrameLayout implements SensorEventListener{
 
+    private float sBallDiameter;
     private float mXDpi;
     private float mYDpi;
 
@@ -24,16 +25,24 @@ public class GameManager implements SensorEventListener{
     private final int mDstHeight;
     private float mMetersToPixelsX;
     private float mMetersToPixelsY;
+    private float mXOrigin;
+    private float mYOrigin;
+    private float mSensorX;
+    private float mSensorY;
+    private float mHorizontalBound;
+    private float mVerticalBound;
 
-    MainActivity mainObj;
+    MainActivity mMainObj;
+    Ball mGameBall;
 
-    GameManager(MainActivity obj){
+    public GameManager(Context context){
+        super(context);
 
-        mainObj = obj;
+        mMainObj = (MainActivity) context;
 
-        float ballDiam = 0.004f;
+        sBallDiameter = 0.004f;
         DisplayMetrics metrics = new DisplayMetrics();
-        obj.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        mMainObj.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         mXDpi = metrics.xdpi;
         mYDpi = metrics.ydpi;
@@ -41,22 +50,62 @@ public class GameManager implements SensorEventListener{
         mMetersToPixelsY = mYDpi / 0.0254f;
 
         // rescale the ball so it's about 0.5 cm on screen
-        mDstWidth = (int) (ballDiam * mMetersToPixelsX + 0.5f);
-        mDstHeight = (int) (ballDiam * mMetersToPixelsY + 0.5f);
+        mDstWidth = (int) (sBallDiameter * mMetersToPixelsX + 0.5f);
+        mDstHeight = (int) (sBallDiameter * mMetersToPixelsY + 0.5f);
 
 //        BitmapFactory.Options opts = new BitmapFactory.Options();
 //        opts.inDither = true;
 //        opts.inPreferredConfig = Bitmap.Config.RGB_565;
 
-        Ball ball=new Ball(obj.getApplicationContext(), ballDiam);
-        obj.addContentView(ball, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
+        mGameBall = new Ball(mMainObj.getApplicationContext(), sBallDiameter);
+        mMainObj.addContentView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
 
 
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        // compute the origin of the screen relative to the origin of
+        // the bitmap
+        mXOrigin = (w - mDstWidth) * 0.5f;
+        mYOrigin = (h - mDstHeight) * 0.5f;
+        mHorizontalBound = ((w / mMetersToPixelsX - sBallDiameter) * 0.5f);
+        mVerticalBound = ((h / mMetersToPixelsY - sBallDiameter) * 0.5f);
+    }
+
+
+    @Override
     public void onSensorChanged(SensorEvent event) {
 
+        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
+            return;
+            /*
+             * record the accelerometer data, the event's timestamp as well as
+             * the current time. The latter is needed so we can calculate the
+             * "present" time during rendering. In this application, we need to
+             * take into account how the screen is rotated with respect to the
+             * sensors (which always return data in a coordinate space aligned
+             * to with the screen in its native orientation).
+             */
+
+        switch (mMainObj.mDisplay.getRotation()) {
+            case Surface.ROTATION_0:
+                mSensorX = event.values[0];
+                mSensorY = event.values[1];
+                break;
+            case Surface.ROTATION_90:
+                mSensorX = -event.values[1];
+                mSensorY = event.values[0];
+                break;
+            case Surface.ROTATION_180:
+                mSensorX = -event.values[0];
+                mSensorY = -event.values[1];
+                break;
+            case Surface.ROTATION_270:
+                mSensorX = event.values[1];
+                mSensorY = -event.values[0];
+                break;
+        }
     }
 
     @Override
@@ -64,7 +113,39 @@ public class GameManager implements SensorEventListener{
 
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+            /*
+             * Compute the new position of our object, based on accelerometer
+             * data and present time.
+             */
 
+        final long now = System.currentTimeMillis();
+        final float sx = mSensorX;
+        final float sy = mSensorY;
+
+//        mGameBall.update(sx, sy, now);
+//
+//        final float xc = mXOrigin;
+//        final float yc = mYOrigin;
+//        final float xs = mMetersToPixelsX;
+//        final float ys = mMetersToPixelsY;
+//        final int count = particleSystem.getParticleCount();
+//        for (int i = 0; i < count; i++) {
+//                /*
+//                 * We transform the canvas so that the coordinate system matches
+//                 * the sensors coordinate system with the origin in the center
+//                 * of the screen and the unit is the meter.
+//                 */
+//            final float x = xc + particleSystem.getPosX(i) * xs;
+//            final float y = yc - particleSystem.getPosY(i) * ys;
+//            particleSystem.mBalls[i].setTranslationX(x);
+//            particleSystem.mBalls[i].setTranslationY(y);
+//        }
+//
+//        // and make sure to redraw asap
+//        invalidate();
+    }
 
     class Brick{
         int x_coor,y_coor,len,wid;
@@ -82,7 +163,11 @@ public class GameManager implements SensorEventListener{
              * of the acceleration. As an added benefit, we use less power and
              * CPU resources.
              */
-            mainObj.mSensorManager.registerListener(this, mainObj.mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        mMainObj.mSensorManager.registerListener(this, mMainObj.mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    public void stopSimulation() {
+        mMainObj.mSensorManager.unregisterListener(this);
     }
 
 }
