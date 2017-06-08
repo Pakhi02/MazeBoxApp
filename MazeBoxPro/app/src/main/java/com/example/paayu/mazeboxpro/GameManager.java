@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.view.Surface;
 import android.view.ViewGroup;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
     public GameManager(Context context){
         super(context);
 
+        Log.v("game manager ", "init");
         mMainObj = (MainActivity) context;
 
         sBallDiameter = 0.004f;
@@ -58,7 +60,9 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 //        opts.inPreferredConfig = Bitmap.Config.RGB_565;
 
         mGameBall = new Ball(mMainObj.getApplicationContext(), sBallDiameter);
-        mMainObj.addContentView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
+        addView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
+
+        setWillNotDraw(false);
 
 
     }
@@ -77,8 +81,10 @@ public class GameManager extends FrameLayout implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
             return;
+        //Log.v("called", "onSensorChanged");
             /*
              * record the accelerometer data, the event's timestamp as well as
              * the current time. The latter is needed so we can calculate the
@@ -119,32 +125,30 @@ public class GameManager extends FrameLayout implements SensorEventListener{
              * Compute the new position of our object, based on accelerometer
              * data and present time.
              */
+        Log.v("called", "draw");
 
         final long now = System.currentTimeMillis();
         final float sx = mSensorX;
         final float sy = mSensorY;
 
-//        mGameBall.update(sx, sy, now);
-//
-//        final float xc = mXOrigin;
-//        final float yc = mYOrigin;
-//        final float xs = mMetersToPixelsX;
-//        final float ys = mMetersToPixelsY;
-//        final int count = particleSystem.getParticleCount();
-//        for (int i = 0; i < count; i++) {
-//                /*
-//                 * We transform the canvas so that the coordinate system matches
-//                 * the sensors coordinate system with the origin in the center
-//                 * of the screen and the unit is the meter.
-//                 */
-//            final float x = xc + particleSystem.getPosX(i) * xs;
-//            final float y = yc - particleSystem.getPosY(i) * ys;
-//            particleSystem.mBalls[i].setTranslationX(x);
-//            particleSystem.mBalls[i].setTranslationY(y);
-//        }
-//
-//        // and make sure to redraw asap
-//        invalidate();
+        mGameBall.updatePositions(sx, sy, now);
+
+        final float xc = mXOrigin;
+        final float yc = mYOrigin;
+        final float xs = mMetersToPixelsX;
+        final float ys = mMetersToPixelsY;
+                /*
+                 * We transform the canvas so that the coordinate system matches
+                 * the sensors coordinate system with the origin in the center
+                 * of the screen and the unit is the meter.
+                 */
+            final float x = xc + mGameBall.getPosX() * xs;
+            final float y = yc - mGameBall.getPosY() * ys;
+        mGameBall.setTranslationX(x);
+        mGameBall.setTranslationY(y);
+
+        // and make sure to redraw asap
+        invalidate();
     }
 
     class Brick{
@@ -156,6 +160,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
     }
 
     public void startSimulation() {
+        Log.v("called", "startSimulation");
             /*
              * It is not necessary to get accelerometer events at a very high
              * rate, by using a slower rate (SENSOR_DELAY_UI), we get an
@@ -167,6 +172,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
     }
 
     public void stopSimulation() {
+        Log.v("called", "stopSimulation");
         mMainObj.mSensorManager.unregisterListener(this);
     }
 

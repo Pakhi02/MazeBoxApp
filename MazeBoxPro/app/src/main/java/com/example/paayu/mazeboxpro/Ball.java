@@ -14,7 +14,7 @@ public class Ball extends View {
         private float mVelY;
         private float sBallDiameter;
         private float sBallDiameter2;
-
+        private long mLastT;
 
     public Ball(Context context, float diam) {
             super(context);
@@ -75,6 +75,28 @@ public class Ball extends View {
 //                mVelY = 0;
 //            }
 //        }
+    }
+    /*
+            * Update the position of each particle in the system using the
+            * Verlet integrator.
+            */
+    public void updatePositions(float sx, float sy, long timestamp) {
+        final long t = timestamp;
+        if (mLastT != 0) {
+            final float dT = (float) (t - mLastT) / 1000.f /** (1.0f / 1000000000.0f)*/;
+
+                computePhysics(sx, sy, dT);
+
+        }
+        mLastT = t;
+    }
+
+    public float getPosX() {
+        return mPosX;
+    }
+
+    public float getPosY() {
+        return mPosY;
     }
 
 }

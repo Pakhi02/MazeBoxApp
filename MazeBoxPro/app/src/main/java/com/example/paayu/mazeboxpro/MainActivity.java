@@ -43,7 +43,8 @@ public class MainActivity extends Activity {
 
 
         mGameManager = new GameManager(this);
-        mSensorManager.registerListener(mGameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);
+        setContentView(mGameManager);
+        //mSensorManager.registerListener(mGameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);
 
     }
 
