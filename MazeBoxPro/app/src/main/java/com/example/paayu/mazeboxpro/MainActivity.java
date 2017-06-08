@@ -12,12 +12,13 @@ import android.view.WindowManager;
 
 public class MainActivity extends Activity {
 
-    private SensorManager mSensorManager;
+    public SensorManager mSensorManager;
     private PowerManager mPowerManager;
     private WindowManager mWindowManager;
     private Display mDisplay;
     private PowerManager.WakeLock mWakeLock;
-    private Sensor mAccelerometer;
+    public Sensor mAccelerometer;
+    private GameManager mGameManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,23 @@ public class MainActivity extends Activity {
                 .getName());
 
 
-        GameManager gameManager = new GameManager(this);
-        mSensorManager.registerListener(gameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);
+        mGameManager = new GameManager(this);
+        //mSensorManager.registerListener(gameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*
+         * when the activity is resumed, we acquire a wake-lock so that the
+         * screen stays on, since the user will likely not be fiddling with the
+         * screen or buttons.
+         */
+        mWakeLock.acquire();
+
+        // Start the simulation
+        mSensorManager.registerListener(mGameManager,mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
 
     }
 

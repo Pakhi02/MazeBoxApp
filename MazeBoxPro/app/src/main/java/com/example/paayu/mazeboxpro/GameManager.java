@@ -6,6 +6,7 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.view.ViewGroup;
 import android.view.ViewGroup;
 import android.util.DisplayMetrics;
@@ -24,9 +25,11 @@ public class GameManager implements SensorEventListener{
     private float mMetersToPixelsX;
     private float mMetersToPixelsY;
 
-
+    MainActivity mainObj;
 
     GameManager(MainActivity obj){
+
+        mainObj = obj;
 
         float ballDiam = 0.004f;
         DisplayMetrics metrics = new DisplayMetrics();
@@ -47,6 +50,8 @@ public class GameManager implements SensorEventListener{
 
         Ball ball=new Ball(obj.getApplicationContext(), ballDiam);
         obj.addContentView(ball, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
+
+
     }
 
     @Override
@@ -59,12 +64,25 @@ public class GameManager implements SensorEventListener{
 
     }
 
+
+
     class Brick{
         int x_coor,y_coor,len,wid;
         Brick()
         {
             //init with defaults
         }
+    }
+
+    public void startSimulation() {
+            /*
+             * It is not necessary to get accelerometer events at a very high
+             * rate, by using a slower rate (SENSOR_DELAY_UI), we get an
+             * automatic low-pass filter, which "extracts" the gravity component
+             * of the acceleration. As an added benefit, we use less power and
+             * CPU resources.
+             */
+            mainObj.mSensorManager.registerListener(this, mainObj.mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
     }
 
 }
