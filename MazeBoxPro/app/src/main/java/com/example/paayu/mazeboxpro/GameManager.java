@@ -131,7 +131,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         final float sx = mSensorX;
         final float sy = mSensorY;
 
-        mGameBall.updatePositions(sx, sy, now);
+        mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound);
 
         final float xc = mXOrigin;
         final float yc = mYOrigin;
