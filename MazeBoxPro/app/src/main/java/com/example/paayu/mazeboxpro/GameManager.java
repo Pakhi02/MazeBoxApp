@@ -61,10 +61,25 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
         mGameBall = new Ball(mMainObj.getApplicationContext(), sBallDiameter);
         addView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
-
         setWillNotDraw(false);
 
+        //mMainObj.addContentView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
+        BrickConfiguration config=new BrickConfiguration();
+        config.loadBrickData();
+        addBricks(config);
+    }
 
+    void addBricks(BrickConfiguration config){
+        config.startIterating();
+        while(config.hasMoreConfig()){
+            BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+            Brick brick=new Brick(this.getContext());
+            FrameLayout.LayoutParams layoutParams =  new FrameLayout.LayoutParams((int)((brickConfig.getWidth()*mMetersToPixelsX)),(int)((brickConfig.getHeight()*mMetersToPixelsY)));
+            layoutParams.leftMargin = brickConfig.getX();
+            layoutParams.topMargin =brickConfig.getY();
+            this.addView(brick,layoutParams);
+
+        }
     }
 
     @Override
@@ -81,10 +96,8 @@ public class GameManager extends FrameLayout implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
             return;
-        //Log.v("called", "onSensorChanged");
             /*
              * record the accelerometer data, the event's timestamp as well as
              * the current time. The latter is needed so we can calculate the
@@ -151,13 +164,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         invalidate();
     }
 
-    class Brick{
-        int x_coor,y_coor,len,wid;
-        Brick()
-        {
-            //init with defaults
-        }
-    }
+
 
     public void startSimulation() {
         Log.v("called", "startSimulation");
