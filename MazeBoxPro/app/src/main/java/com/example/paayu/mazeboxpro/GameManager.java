@@ -96,8 +96,10 @@ public class GameManager extends FrameLayout implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
             return;
+        //Log.v("called", "onSensorChanged");
             /*
              * record the accelerometer data, the event's timestamp as well as
              * the current time. The latter is needed so we can calculate the
