@@ -64,6 +64,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         setWillNotDraw(false);
 
         //mMainObj.addContentView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
+        setWillNotDraw(false);
         BrickConfiguration config=new BrickConfiguration();
         config.loadBrickData();
         addBricks(config);

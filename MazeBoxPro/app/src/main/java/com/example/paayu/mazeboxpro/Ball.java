@@ -46,7 +46,9 @@ public class Ball extends View {
             mPosY += mVelY * dT + ay * dT * dT / 2;
 
             mVelX += ax * dT;
+            mVelX = mVelX/1.5f;
             mVelY += ay * dT;
+            mVelY = mVelY/1.5f;
         }
 
         /*
