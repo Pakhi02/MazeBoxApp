@@ -22,7 +22,7 @@ public class BrickConfiguration {
         }
 
         for(int i=2;i<12;i++) {
-            brickConfigList.add(new Configuration(120*2, i*40, .005f, .005f));
+            brickConfigList.add(new Configuration(120*3, i*40, .005f, .005f));
         }
     }
 

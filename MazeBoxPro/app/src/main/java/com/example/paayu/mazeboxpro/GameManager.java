@@ -35,6 +35,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
     MainActivity mMainObj;
     Ball mGameBall;
+    BrickConfiguration brickConfig;
 
     public GameManager(Context context){
         super(context);
@@ -65,9 +66,9 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
         //mMainObj.addContentView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
         setWillNotDraw(false);
-        BrickConfiguration config=new BrickConfiguration();
-        config.loadBrickData();
-        addBricks(config);
+        brickConfig = new BrickConfiguration();
+        brickConfig.loadBrickData();
+        addBricks(brickConfig);
     }
 
     void addBricks(BrickConfiguration config){
@@ -147,7 +148,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         final float sx = mSensorX;
         final float sy = mSensorY;
 
-        mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound);
+        mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound, brickConfig);
 
         final float xc = mXOrigin;
         final float yc = mYOrigin;
