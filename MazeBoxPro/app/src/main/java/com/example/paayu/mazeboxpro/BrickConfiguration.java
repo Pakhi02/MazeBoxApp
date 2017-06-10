@@ -11,8 +11,16 @@ import java.util.Vector;
 
 public class BrickConfiguration {
 
-    Vector<Configuration> brickConfigList;
+    private Vector<Configuration> brickConfigList;
+    private float mMetersToPixelsX;
+    private float mMetersToPixelsY;
     int i=0;
+
+    BrickConfiguration(float mMetersToPixelsX,float mMetersToPixelsY){
+        this.mMetersToPixelsX=mMetersToPixelsX;
+        this.mMetersToPixelsY=mMetersToPixelsY;
+    }
+
     static Iterator<Configuration> brickConfigurationIterator;
     void loadBrickData(){
        brickConfigList = new Vector<>();
@@ -53,10 +61,10 @@ public class BrickConfiguration {
             return y;
         }
         float getWidth(){
-            return width;
+            return (width*mMetersToPixelsX);
         }
         float getHeight(){
-            return height;
+            return height*mMetersToPixelsY;
         }
     }
 

@@ -66,7 +66,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
         //mMainObj.addContentView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
         setWillNotDraw(false);
-        brickConfig = new BrickConfiguration();
+        brickConfig = new BrickConfiguration(mMetersToPixelsX,mMetersToPixelsY);
         brickConfig.loadBrickData();
         addBricks(brickConfig);
     }
@@ -76,7 +76,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         while(config.hasMoreConfig()){
             BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
             Brick brick=new Brick(this.getContext());
-            FrameLayout.LayoutParams layoutParams =  new FrameLayout.LayoutParams((int)((brickConfig.getWidth()*mMetersToPixelsX)),(int)((brickConfig.getHeight()*mMetersToPixelsY)));
+            FrameLayout.LayoutParams layoutParams =  new FrameLayout.LayoutParams((int)brickConfig.getWidth(),(int)brickConfig.getHeight());
             layoutParams.leftMargin = brickConfig.getX();
             layoutParams.topMargin =brickConfig.getY();
             this.addView(brick,layoutParams);
