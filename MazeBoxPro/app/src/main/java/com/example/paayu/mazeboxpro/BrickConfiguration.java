@@ -17,43 +17,62 @@ public class BrickConfiguration {
     private float mMetersToPixelsY;
     private float mXOrigin;
     private float mYOrigin;
-    int i=0;
+    int ii=0;
 
-    BrickConfiguration(float mMetersToPixelsX,float mMetersToPixelsY, float XOrigin, float YOrigin){
-        this.mMetersToPixelsX=mMetersToPixelsX;
-        this.mMetersToPixelsY=mMetersToPixelsY;
-        mXOrigin = XOrigin;
-        mYOrigin = YOrigin;
+    int horizontalCells=10;
+    int verticalCells=15;
+    int screenWidth;
+    int screenHeight;
+
+
+    BrickConfiguration(int screenWidth,int screenHeight){
+        this.screenWidth=screenWidth;
+        this.screenHeight=screenHeight;
     }
 
     static Iterator<Configuration> brickConfigurationIterator;
     void loadBrickData(){
        brickConfigList = new Vector<>();
-//        Log.v("called pos x in conf", String.valueOf(mXOrigin));
-//        Log.v("called pos y in conf", String.valueOf(mYOrigin));
+        Log.v("called pos x in conf", String.valueOf(mXOrigin));
 
-        for(int i=0;i<10;i++) {
-            //brickConfigList.add(new Configuration(120, i*40, .005f, .005f));
-            brickConfigList.add(new Configuration(0.001f, i*0.001f, .005f, .005f));
 
+
+        Log.v("called pos y in conf", String.valueOf(mYOrigin));
+       // int i=0,j=0;
+
+        float i=1;float j=1;
+        float cellWidth=((float)screenWidth/(float)horizontalCells);
+        float cellHeight=((float)screenHeight/(float)verticalCells);
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth), (cellHeight)));
+
+        i=1;j=2;
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth), (cellHeight)));
+
+        i=2;j=2;
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) , (cellHeight)));
+
+        i=3;j=3;
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) , (cellHeight)));
+
+        /*for(int i=0;i<horizontalCells;i++) {
+            for(int j=0;j<verticalCells;j++) {
+                //brickConfigList.add(new Configuration(120, i*40, .005f, .005f));
+                brickConfigList.add(new Configuration(0.001f, i * 0.002f, .005f, .005f));
+            }
         }
-
-        for(int i=2;i<12;i++) {
-            //brickConfigList.add(new Configuration(120*3, i*40, .005f, .005f));
-            brickConfigList.add(new Configuration(0.001f*2, i*0.001f, .005f, .005f));
-        }
+*/
     }
 
     void startIterating(){
-        i=0;
+        ii=0;
     }
     boolean hasMoreConfig(){
-       if(i<brickConfigList.size())
+       if(ii<brickConfigList.size())
            return true;
         return false;
     }
     Configuration getNextConfiguration(){
-        return brickConfigList.elementAt(i++);
+        return brickConfigList.elementAt(ii++);
     }
     class Configuration{
         float x,y;
@@ -65,16 +84,16 @@ public class BrickConfiguration {
             this.height=height;
         }
         int getX(){
-            return (int)(mXOrigin+ x*mMetersToPixelsX);
+            return (int)x;
         }
         int getY(){
-            return (int)(mYOrigin- y*mMetersToPixelsY);
+            return (int)(y);
         }
         float getWidth(){
-            return (width*mMetersToPixelsX);
+            return width;
         }
         float getHeight(){
-            return height*mMetersToPixelsY;
+            return height;
         }
     }
 

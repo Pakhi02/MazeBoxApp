@@ -115,7 +115,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 //        Log.v("called new experi hei", String.valueOf(height));
 
 
-        brickConfig = new BrickConfiguration(mMetersToPixelsX,mMetersToPixelsY,mXOrigin, mYOrigin);
+        brickConfig = new BrickConfiguration(w,h);
         brickConfig.loadBrickData();
         addBricks(brickConfig);
 
