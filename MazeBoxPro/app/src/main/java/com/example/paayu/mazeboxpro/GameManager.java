@@ -60,7 +60,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 //        opts.inDither = true;
 //        opts.inPreferredConfig = Bitmap.Config.RGB_565;
 
-        mGameBall = new Ball(mMainObj.getApplicationContext(), sBallDiameter);
+        mGameBall = new Ball(mMainObj.getApplicationContext(), sBallDiameter,mMetersToPixelsX,mMetersToPixelsY);
         addView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
         setWillNotDraw(false);
 

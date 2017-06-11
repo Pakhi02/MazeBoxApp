@@ -18,11 +18,16 @@ public class Ball extends View {
         private float sBallDiameter2;
         private long mLastT;
 
-    public Ball(Context context, float diam) {
+        private float mMetersToPixelsX;
+        private float mMetersToPixelsY;
+
+    public Ball(Context context, float diam,float mMetersToPixelsX,float mMetersToPixelsY) {
             super(context);
         sBallDiameter = diam;
         sBallDiameter2 = diam*diam;
         setBackgroundResource(R.drawable.ball);
+        this.mMetersToPixelsX=mMetersToPixelsX;
+        this.mMetersToPixelsY=mMetersToPixelsY;
         }
 
         public Ball(Context context, AttributeSet attrs) {
@@ -65,8 +70,19 @@ public class Ball extends View {
         public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config) {
             final float xmax = mHorizontalBound;
             final float ymax = mVerticalBound;
-            final float x = mPosX;
-            final float y = mPosY;
+             float x = mPosX;
+            if(x<0)
+                x=-x;
+            else
+                x=2*x;
+
+
+             float y = mPosY;
+            if(y<0)
+                y=-y;
+            else
+                y=2*y;
+
             //Check for detection with bricks
 int found = 0;
             config.startIterating();
@@ -76,20 +92,24 @@ int found = 0;
                 if(mPosX > mOldPosX)
                 {
                     //Coming from left
-                    if( (x > brickConfig.getX()) && ( x< (brickConfig.getX() + brickConfig.getWidth())) )
+                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
+                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
+                    if( (x >xStart) && ( x< xEnd) )
                     {
-                        mPosX = brickConfig.getX();
+                        mPosX = xStart;
                         mVelX = 0;
                         found = 1;
                     }
                 }
 
-                else if(mPosX > mOldPosX)
+                else if(mPosX < mOldPosX)
                 {
+                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
+                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
                     //Coming from right
-                    if( (x > brickConfig.getX()) && ( x< (brickConfig.getX() + brickConfig.getWidth())) )
+                    if( (x >xStart) && ( x< xEnd) )
                     {
-                        mPosX = brickConfig.getX() + brickConfig.getWidth();
+                        mPosX = xEnd;
                         mVelX = 0;
                         found = 1;
                     }
@@ -97,26 +117,28 @@ int found = 0;
 
                 if(mPosY > mOldPosY)
                 {
+                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
+                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
                     //Coming from left
-                    if( (y > brickConfig.getY()) && ( y< (brickConfig.getY() + brickConfig.getHeight())) )
+                    if( (y >yStart) && ( y< yEnd) )
                     {
-                        mPosY = brickConfig.getY();
+                        mPosY =yStart;
                         mVelY = 0;
                         found = 1;
                     }
                 }
-                else if(mPosX > mOldPosX)
+                else if(mPosX < mOldPosX)
                 {
+                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
+                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
                     //Coming from right
-                    if( (y > brickConfig.getY()) && ( y< (brickConfig.getY() + brickConfig.getHeight())) )
+                    if( (y >yStart) && ( y< yEnd) )
                     {
-                        mPosY = brickConfig.getY() + brickConfig.getHeight();
+                        mPosY = yEnd;
                         mVelY = 0;
                         found = 1;
                     }
                 }
-
-
 
             }
 
