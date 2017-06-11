@@ -66,9 +66,9 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
         //mMainObj.addContentView(mGameBall, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
         setWillNotDraw(false);
-        brickConfig = new BrickConfiguration(mMetersToPixelsX,mMetersToPixelsY);
-        brickConfig.loadBrickData();
-        addBricks(brickConfig);
+//        brickConfig = new BrickConfiguration(mMetersToPixelsX,mMetersToPixelsY,mXOrigin, mYOrigin);
+//        brickConfig.loadBrickData();
+//        addBricks(brickConfig);
     }
 
     void addBricks(BrickConfiguration config){
@@ -77,6 +77,10 @@ public class GameManager extends FrameLayout implements SensorEventListener{
             BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
             Brick brick=new Brick(this.getContext());
             FrameLayout.LayoutParams layoutParams =  new FrameLayout.LayoutParams((int)brickConfig.getWidth(),(int)brickConfig.getHeight());
+            Log.v("called pos brick x", String.valueOf(brickConfig.getX()));
+            Log.v("called pos brick y", String.valueOf(brickConfig.getY()));
+            Log.v("called pos brick width", String.valueOf(brickConfig.getWidth()));
+            Log.v("called pos brick height", String.valueOf(brickConfig.getHeight()));
             layoutParams.leftMargin = brickConfig.getX();
             layoutParams.topMargin =brickConfig.getY();
             this.addView(brick,layoutParams);
@@ -88,10 +92,26 @@ public class GameManager extends FrameLayout implements SensorEventListener{
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // compute the origin of the screen relative to the origin of
         // the bitmap
-        mXOrigin = (w - mDstWidth) * 0.5f;
-        mYOrigin = (h - mDstHeight) * 0.5f;
-        mHorizontalBound = ((w / mMetersToPixelsX - sBallDiameter) * 0.5f);
-        mVerticalBound = ((h / mMetersToPixelsY - sBallDiameter) * 0.5f);
+        Log.v("called ", "size changed");
+//        mXOrigin = (w - mDstWidth) * 0.5f;
+//        mYOrigin = (h - mDstHeight) * 0.5f;
+        mXOrigin = (  sBallDiameter) ;
+        mYOrigin = ( sBallDiameter);
+
+
+        Log.v("called size origin x", String.valueOf(mXOrigin));
+        Log.v("called size origin y", String.valueOf(mYOrigin));
+
+//        mHorizontalBound = ((w / mMetersToPixelsX - sBallDiameter) * 0.5f);
+//        mVerticalBound = ((h / mMetersToPixelsY - sBallDiameter) * 0.5f);
+
+
+        mHorizontalBound = ((w/ mMetersToPixelsX  - sBallDiameter) );
+        mVerticalBound = ((h/ mMetersToPixelsY  - sBallDiameter) );
+
+        brickConfig = new BrickConfiguration(mMetersToPixelsX,mMetersToPixelsY,mXOrigin, mYOrigin);
+        brickConfig.loadBrickData();
+        addBricks(brickConfig);
     }
 
 
@@ -101,7 +121,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
             return;
-        //Log.v("called", "onSensorChanged");
+
             /*
              * record the accelerometer data, the event's timestamp as well as
              * the current time. The latter is needed so we can calculate the
@@ -148,7 +168,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         final float sx = mSensorX;
         final float sy = mSensorY;
 
-        mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound, brickConfig);
+        mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound, brickConfig, mXOrigin, mYOrigin);
 
         final float xc = mXOrigin;
         final float yc = mYOrigin;
@@ -159,13 +179,13 @@ public class GameManager extends FrameLayout implements SensorEventListener{
                  * the sensors coordinate system with the origin in the center
                  * of the screen and the unit is the meter.
                  */
-//            final float x = xc + mGameBall.getPosX() * xs;
-//            final float y = yc - mGameBall.getPosY() * ys;
-        final float x =  mGameBall.getPosX() * xs;
-        final float y =  mGameBall.getPosY() * ys;
+            final float x = xc + mGameBall.getPosX() * xs;
+            final float y = yc - mGameBall.getPosY() * ys;
+
 
         mGameBall.setTranslationX(x);
         mGameBall.setTranslationY(y);
+
 
         // and make sure to redraw asap
         invalidate();

@@ -67,21 +67,23 @@ public class Ball extends View {
          * constrained particle in such way that the constraint is
          * satisfied.
          */
-        public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config) {
+        public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin) {
             final float xmax = mHorizontalBound;
             final float ymax = mVerticalBound;
-             float x = mPosX;
-            if(x<0)
-                x=-x;
-            else
-                x=2*x;
+             float x = xOrigin + mPosX*mMetersToPixelsX;
+            float y = yOrigin - mPosY*mMetersToPixelsY;
 
-
-             float y = mPosY;
-            if(y<0)
-                y=-y;
-            else
-                y=2*y;
+//            if(x<0)
+//                x=-x;
+//            else
+//                x=2*x;
+//
+//
+//             float y = mPosY;
+//            if(y<0)
+//                y=-y;
+//            else
+//                y=2*y;
 
             //Check for detection with bricks
 int found = 0;
@@ -142,34 +144,39 @@ int found = 0;
 
             }
 
-            //Check for detection with boundaries
-            if (x > xmax) {
-                mPosX = xmax;
+            //Check for detection with boundarie
+
+            if (x < xOrigin) {
+                mPosX = xOrigin/mMetersToPixelsX;
                 mVelX = 0;
-            } else if (x < -xmax) {
-                mPosX = -xmax;
+            } else if (x > (mHorizontalBound*mMetersToPixelsX)) {
+                mPosX = mHorizontalBound;
                 mVelX = 0;
             }
-            if (y > ymax) {
-                mPosY = ymax;
+
+
+            if (y < yOrigin) {
+                mPosY = yOrigin/mMetersToPixelsY;
                 mVelY = 0;
-            } else if (y < -ymax) {
-                mPosY = -ymax;
+            } else if (y > mVerticalBound*mMetersToPixelsY) {
+                mPosY = yOrigin/mMetersToPixelsY +mVerticalBound;
                 mVelY = 0;
             }
+
+
         }
 
     /*
             * Update the position of each particle in the system using the
             * Verlet integrator.
             */
-    public void updatePositions(float sx, float sy, long timestamp, float mHorizontalBound, float mVerticalBound, BrickConfiguration brickConfig) {
+    public void updatePositions(float sx, float sy, long timestamp, float mHorizontalBound, float mVerticalBound, BrickConfiguration brickConfig, float xOrigin, float yOrigin) {
         final long t = timestamp;
         if (mLastT != 0) {
             final float dT = (float) (t - mLastT) / 1000.f /** (1.0f / 1000000000.0f)*/;
 
                 computePhysics(sx, sy, dT);
-            resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig);
+            resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig,  xOrigin,  yOrigin);
 
         }
         mLastT = t;
