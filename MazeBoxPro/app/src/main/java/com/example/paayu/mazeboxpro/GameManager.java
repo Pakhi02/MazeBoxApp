@@ -159,8 +159,11 @@ public class GameManager extends FrameLayout implements SensorEventListener{
                  * the sensors coordinate system with the origin in the center
                  * of the screen and the unit is the meter.
                  */
-            final float x = xc + mGameBall.getPosX() * xs;
-            final float y = yc - mGameBall.getPosY() * ys;
+//            final float x = xc + mGameBall.getPosX() * xs;
+//            final float y = yc - mGameBall.getPosY() * ys;
+        final float x =  mGameBall.getPosX() * xs;
+        final float y =  mGameBall.getPosY() * ys;
+
         mGameBall.setTranslationX(x);
         mGameBall.setTranslationY(y);
 
