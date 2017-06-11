@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 public class Ball extends View {
@@ -67,99 +68,96 @@ public class Ball extends View {
          * constrained particle in such way that the constraint is
          * satisfied.
          */
-        public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin) {
+        public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
             final float xmax = mHorizontalBound;
             final float ymax = mVerticalBound;
-             float x = xOrigin + mPosX*mMetersToPixelsX;
-            float y = yOrigin - mPosY*mMetersToPixelsY;
+            float x =   mPosX*mMetersToPixelsX;
+            float y =  - mPosY*mMetersToPixelsY;
 
-//            if(x<0)
+//            if(sx>0)
 //                x=-x;
-//            else
-//                x=2*x;
+////            else
+////                x=2*x;
 //
-//
-//             float y = mPosY;
-//            if(y<0)
+//            if(sy>0)
 //                y=-y;
-//            else
-//                y=2*y;
 
             //Check for detection with bricks
-int found = 0;
-            config.startIterating();
-            while(config.hasMoreConfig() && (found == 0))
-            {
-                BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
-                if(mPosX > mOldPosX)
-                {
-                    //Coming from left
-                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
-                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
-                    if( (x >xStart) && ( x< xEnd) )
-                    {
-                        mPosX = xStart;
-                        mVelX = 0;
-                        found = 1;
-                    }
-                }
+//int found = 0;
+//            config.startIterating();
+//            while(config.hasMoreConfig() && (found == 0))
+//            {
+//                BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+//                if(mPosX > mOldPosX)
+//                {
+//                    //Coming from left
+//                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
+//                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
+//                    if( (x >xStart) && ( x< xEnd) )
+//                    {
+//                        mPosX = xStart;
+//                        mVelX = 0;
+//                        found = 1;
+//                    }
+//                }
+//
+//                else if(mPosX < mOldPosX)
+//                {
+//                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
+//                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
+//                    //Coming from right
+//                    if( (x >xStart) && ( x< xEnd) )
+//                    {
+//                        mPosX = xEnd;
+//                        mVelX = 0;
+//                        found = 1;
+//                    }
+//                }
+//
+//                if(mPosY > mOldPosY)
+//                {
+//                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
+//                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
+//                    //Coming from left
+//                    if( (y >yStart) && ( y< yEnd) )
+//                    {
+//                        mPosY =yStart;
+//                        mVelY = 0;
+//                        found = 1;
+//                    }
+//                }
+//                else if(mPosX < mOldPosX)
+//                {
+//                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
+//                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
+//                    //Coming from right
+//                    if( (y >yStart) && ( y< yEnd) )
+//                    {
+//                        mPosY = yEnd;
+//                        mVelY = 0;
+//                        found = 1;
+//                    }
+//                }
+//
+//            }
 
-                else if(mPosX < mOldPosX)
-                {
-                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
-                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
-                    //Coming from right
-                    if( (x >xStart) && ( x< xEnd) )
-                    {
-                        mPosX = xEnd;
-                        mVelX = 0;
-                        found = 1;
-                    }
-                }
-
-                if(mPosY > mOldPosY)
-                {
-                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
-                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
-                    //Coming from left
-                    if( (y >yStart) && ( y< yEnd) )
-                    {
-                        mPosY =yStart;
-                        mVelY = 0;
-                        found = 1;
-                    }
-                }
-                else if(mPosX < mOldPosX)
-                {
-                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
-                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
-                    //Coming from right
-                    if( (y >yStart) && ( y< yEnd) )
-                    {
-                        mPosY = yEnd;
-                        mVelY = 0;
-                        found = 1;
-                    }
-                }
-
-            }
-
-            //Check for detection with boundarie
+            //Check for detection with boundaries
 
             if (x < xOrigin) {
-                mPosX = xOrigin/mMetersToPixelsX;
+                mPosX = 0; //xOrigin/mMetersToPixelsX
                 mVelX = 0;
-            } else if (x > (mHorizontalBound*mMetersToPixelsX)) {
-                mPosX = mHorizontalBound;
+            } else if (x > mHorizontalBound) {
+                mPosX = mHorizontalBound/mMetersToPixelsX;
                 mVelX = 0;
             }
 
 
             if (y < yOrigin) {
-                mPosY = yOrigin/mMetersToPixelsY;
+                mPosY = 0; //yOrigin/mMetersToPixelsY
                 mVelY = 0;
-            } else if (y > mVerticalBound*mMetersToPixelsY) {
-                mPosY = yOrigin/mMetersToPixelsY +mVerticalBound;
+            }
+            else if (y > mVerticalBound) {
+                mPosY = -(mVerticalBound/mMetersToPixelsY);
                 mVelY = 0;
             }
 
@@ -176,7 +174,7 @@ int found = 0;
             final float dT = (float) (t - mLastT) / 1000.f /** (1.0f / 1000000000.0f)*/;
 
                 computePhysics(sx, sy, dT);
-            resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig,  xOrigin,  yOrigin);
+            resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig,  xOrigin,  yOrigin, sx, sy);
 
         }
         mLastT = t;

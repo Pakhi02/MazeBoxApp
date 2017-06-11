@@ -29,8 +29,8 @@ public class BrickConfiguration {
     static Iterator<Configuration> brickConfigurationIterator;
     void loadBrickData(){
        brickConfigList = new Vector<>();
-        Log.v("called pos x in conf", String.valueOf(mXOrigin));
-        Log.v("called pos y in conf", String.valueOf(mYOrigin));
+//        Log.v("called pos x in conf", String.valueOf(mXOrigin));
+//        Log.v("called pos y in conf", String.valueOf(mYOrigin));
 
         for(int i=0;i<10;i++) {
             //brickConfigList.add(new Configuration(120, i*40, .005f, .005f));

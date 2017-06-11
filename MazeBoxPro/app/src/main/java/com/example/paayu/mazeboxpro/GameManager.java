@@ -4,11 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.Surface;
 import android.view.ViewGroup;
 import android.view.ViewGroup;
@@ -51,10 +53,14 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         mYDpi = metrics.ydpi;
         mMetersToPixelsX = mXDpi / 0.0254f;
         mMetersToPixelsY = mYDpi / 0.0254f;
+        mXOrigin = 0;
+        mYOrigin = 0;
 
         // rescale the ball so it's about 0.5 cm on screen
-        mDstWidth = (int) (sBallDiameter * mMetersToPixelsX + 0.5f);
-        mDstHeight = (int) (sBallDiameter * mMetersToPixelsY + 0.5f);
+//        mDstWidth = (int) (sBallDiameter * mMetersToPixelsX + 0.5f);
+//        mDstHeight = (int) (sBallDiameter * mMetersToPixelsY + 0.5f);
+        mDstWidth = (int) (sBallDiameter * mMetersToPixelsX);
+        mDstHeight = (int) (sBallDiameter * mMetersToPixelsY);
 
 //        BitmapFactory.Options opts = new BitmapFactory.Options();
 //        opts.inDither = true;
@@ -77,10 +83,10 @@ public class GameManager extends FrameLayout implements SensorEventListener{
             BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
             Brick brick=new Brick(this.getContext());
             FrameLayout.LayoutParams layoutParams =  new FrameLayout.LayoutParams((int)brickConfig.getWidth(),(int)brickConfig.getHeight());
-            Log.v("called pos brick x", String.valueOf(brickConfig.getX()));
-            Log.v("called pos brick y", String.valueOf(brickConfig.getY()));
-            Log.v("called pos brick width", String.valueOf(brickConfig.getWidth()));
-            Log.v("called pos brick height", String.valueOf(brickConfig.getHeight()));
+//            Log.v("called pos brick x", String.valueOf(brickConfig.getX()));
+//            Log.v("called pos brick y", String.valueOf(brickConfig.getY()));
+//            Log.v("called pos brick width", String.valueOf(brickConfig.getWidth()));
+//            Log.v("called pos brick height", String.valueOf(brickConfig.getHeight()));
             layoutParams.leftMargin = brickConfig.getX();
             layoutParams.topMargin =brickConfig.getY();
             this.addView(brick,layoutParams);
@@ -95,23 +101,30 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         Log.v("called ", "size changed");
 //        mXOrigin = (w - mDstWidth) * 0.5f;
 //        mYOrigin = (h - mDstHeight) * 0.5f;
-        mXOrigin = (  sBallDiameter) ;
-        mYOrigin = ( sBallDiameter);
 
+        mHorizontalBound = w - (sBallDiameter*mMetersToPixelsX);
+        mVerticalBound = h - (sBallDiameter*mMetersToPixelsY);
 
-        Log.v("called size origin x", String.valueOf(mXOrigin));
-        Log.v("called size origin y", String.valueOf(mYOrigin));
+//        //Display display = mMainObj.getWindowManager().getDefaultDisplay();
+//        Point size = new Point();
+//        mMainObj.getWindowManager().getDefaultDisplay().getSize(size);
+//
+//        int width = size.x;
+//        int height = size.y;
+//        Log.v("called new experi wid", String.valueOf(width));
+//        Log.v("called new experi hei", String.valueOf(height));
 
-//        mHorizontalBound = ((w / mMetersToPixelsX - sBallDiameter) * 0.5f);
-//        mVerticalBound = ((h / mMetersToPixelsY - sBallDiameter) * 0.5f);
-
-
-        mHorizontalBound = ((w/ mMetersToPixelsX  - sBallDiameter) );
-        mVerticalBound = ((h/ mMetersToPixelsY  - sBallDiameter) );
 
         brickConfig = new BrickConfiguration(mMetersToPixelsX,mMetersToPixelsY,mXOrigin, mYOrigin);
         brickConfig.loadBrickData();
         addBricks(brickConfig);
+
+//        Ball temp = new Ball(mMainObj.getApplicationContext(), sBallDiameter,mMetersToPixelsX,mMetersToPixelsY);
+//        addView(temp, new ViewGroup.LayoutParams(mDstWidth,mDstHeight));
+//        temp.setTranslationX(mHorizontalBound);
+//        temp.setTranslationY(mVerticalBound);
+//        setWillNotDraw(false);
+
     }
 
 
@@ -162,7 +175,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
              * Compute the new position of our object, based on accelerometer
              * data and present time.
              */
-        Log.v("called", "draw");
+        //Log.v("called", "draw");
 
         final long now = System.currentTimeMillis();
         final float sx = mSensorX;
