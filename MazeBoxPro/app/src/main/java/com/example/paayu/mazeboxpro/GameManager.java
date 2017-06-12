@@ -87,9 +87,10 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 //            Log.v("called pos brick y", String.valueOf(brickConfig.getY()));
 //            Log.v("called pos brick width", String.valueOf(brickConfig.getWidth()));
 //            Log.v("called pos brick height", String.valueOf(brickConfig.getHeight()));
-            layoutParams.leftMargin = brickConfig.getX();
-            layoutParams.topMargin =brickConfig.getY();
+
             this.addView(brick,layoutParams);
+            brick.setTranslationX(brickConfig.getX());
+            brick.setTranslationY(brickConfig.getY());
 
         }
     }

@@ -20,7 +20,7 @@ public class BrickConfiguration {
     int ii=0;
 
     int horizontalCells=10;
-    int verticalCells=15;
+    int verticalCells=20;
     int screenWidth;
     int screenHeight;
 
@@ -43,16 +43,24 @@ public class BrickConfiguration {
         float i=1;float j=1;
         float cellWidth=((float)screenWidth/(float)horizontalCells);
         float cellHeight=((float)screenHeight/(float)verticalCells);
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth), (cellHeight)));
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
 
         i=1;j=2;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth), (cellHeight)));
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
 
         i=2;j=2;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) , (cellHeight)));
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) +3, (cellHeight)+3));
 
         i=3;j=3;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) , (cellHeight)));
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3 , (cellHeight)+3));
+
+        i=9;j=19;
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3 , 3+(cellHeight)));
+
+        i=8;j=18;
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) +3, 3+(cellHeight)));
+        i=6;j=15;
+        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth+3) , (cellHeight+3)));
 
         /*for(int i=0;i<horizontalCells;i++) {
             for(int j=0;j<verticalCells;j++) {
@@ -83,11 +91,11 @@ public class BrickConfiguration {
             this.width=width;
             this.height=height;
         }
-        int getX(){
-            return (int)x;
+        float getX(){
+            return x;
         }
-        int getY(){
-            return (int)(y);
+        float getY(){
+            return (y);
         }
         float getWidth(){
             return width;
