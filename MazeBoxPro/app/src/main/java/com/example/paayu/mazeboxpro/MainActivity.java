@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
                 .getName());
 
-
         mGameManager = new GameManager(this);
         setContentView(mGameManager);
         //mSensorManager.registerListener(mGameManager,mAccelerometer,SensorManager.SENSOR_DELAY_GAME);

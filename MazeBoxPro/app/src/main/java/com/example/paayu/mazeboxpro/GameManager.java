@@ -56,6 +56,8 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         mXOrigin = 0;
         mYOrigin = 0;
 
+        this.setBackgroundResource(R.drawable.night_background);
+
         // rescale the ball so it's about 0.5 cm on screen
 //        mDstWidth = (int) (sBallDiameter * mMetersToPixelsX + 0.5f);
 //        mDstHeight = (int) (sBallDiameter * mMetersToPixelsY + 0.5f);
