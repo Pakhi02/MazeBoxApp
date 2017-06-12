@@ -83,25 +83,52 @@ public class Ball extends View {
 //                y=-y;
 
             //Check for detection with bricks
-//int found = 0;
-//            config.startIterating();
-//            while(config.hasMoreConfig() && (found == 0))
-//            {
-//                BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
-//                if(mPosX > mOldPosX)
+int found = 0;
+            config.startIterating();
+            while(config.hasMoreConfig() && (found == 0))
+            {
+                BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+
+                if((sx>0) && (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth()))  && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
+                {
+                    //if(sx<0)
+                        //mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
+//                        else
+                        mPosX = (brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX;
+                    mVelX = 0;
+                    found = 1;
+                }
+
+                else if((sx<0) && ((x+sBallDiameter*mMetersToPixelsX) >brickConfig.getX()) && ( (x+sBallDiameter*mMetersToPixelsX)< (brickConfig.getX()+brickConfig.getWidth()))  && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
+                {
+                   // if(sx<0)
+                        mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
+//                    else
+//                        mPosX = (brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX;
+                    mVelX = 0;
+                    found = 1;
+                }
+
+                if((sy<0) && (y >brickConfig.getY()) && ( y< (brickConfig.getY()+brickConfig.getHeight()))  && (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth())))
+                {
+
+                    mPosY = (brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY;
+                    mPosY = -mPosY;
+                    mVelY = 0;
+                    found = 1;
+                }
+//                else if((sy>0) && ((y+sBallDiameter*mMetersToPixelsY) >brickConfig.getY()) && ( (y+sBallDiameter*mMetersToPixelsY)< (brickConfig.getY()+brickConfig.getHeight()))  && (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth())))
 //                {
-//                    //Coming from left
-//                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
-//                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
-//                    if( (x >xStart) && ( x< xEnd) )
-//                    {
-//                        mPosX = xStart;
-//                        mVelX = 0;
-//                        found = 1;
-//                    }
+//                    //if(sx<0)
+//                    //mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
+////                        else
+//                    mPosY = (brickConfig.getY()-sBallDiameter*mMetersToPixelsY)/mMetersToPixelsY;
+//                    mPosY = -mPosY;
+//                    mVelY = 0;
+//                    found = 1;
 //                }
-//
-//                else if(mPosX < mOldPosX)
+
+                //else if(mPosX < mOldPosX)
 //                {
 //                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
 //                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
@@ -113,7 +140,7 @@ public class Ball extends View {
 //                        found = 1;
 //                    }
 //                }
-//
+
 //                if(mPosY > mOldPosY)
 //                {
 //                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
@@ -137,9 +164,9 @@ public class Ball extends View {
 //                        mVelY = 0;
 //                        found = 1;
 //                    }
-//                }
-//
-//            }
+                //}
+
+            }
 
             //Check for detection with boundaries
 
