@@ -40,27 +40,25 @@ public class BrickConfiguration {
         Log.v("called pos y in conf", String.valueOf(mYOrigin));
        // int i=0,j=0;
 
-        float i=1;float j=1;
+
         float cellWidth=((float)screenWidth/(float)horizontalCells);
         float cellHeight=((float)screenHeight/(float)verticalCells);
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
 
-        i=1;j=2;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+        for(float j=0;j<verticalCells-1;j++){
+            brickConfigList.add(new Configuration((cellWidth)*1, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+        }
 
-        i=2;j=2;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) +3, (cellHeight)+3));
+        for(float j=1;j<verticalCells;j++){
+            brickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+        }
 
-        i=3;j=3;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3 , (cellHeight)+3));
+        for(float j=0;j<verticalCells-1;j++){
+            brickConfigList.add(new Configuration((cellWidth)*5, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+        }
 
-        i=9;j=19;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth)+3 , 3+(cellHeight)));
-
-        i=8;j=18;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth) +3, 3+(cellHeight)));
-        i=6;j=15;
-        brickConfigList.add(new Configuration((cellWidth)*i, (cellHeight)*j,(cellWidth+3) , (cellHeight+3)));
+        for(float j=1;j<verticalCells;j++){
+            brickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+        }
 
         /*for(int i=0;i<horizontalCells;i++) {
             for(int j=0;j<verticalCells;j++) {
