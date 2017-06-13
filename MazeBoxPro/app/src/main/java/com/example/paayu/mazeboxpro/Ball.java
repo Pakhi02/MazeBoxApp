@@ -29,6 +29,8 @@ public class Ball extends View {
         setBackgroundResource(R.drawable.ball);
         this.mMetersToPixelsX=mMetersToPixelsX;
         this.mMetersToPixelsY=mMetersToPixelsY;
+        mOldPosY=0;
+        mOldPosX=0;
         }
 
         public Ball(Context context, AttributeSet attrs) {
@@ -49,8 +51,6 @@ public class Ball extends View {
 
             final float ax = -sx/5;
             final float ay = -sy/5;
-            mOldPosX = mPosX;
-            mOldPosY = mPosY;
 
 
             mPosX += mVelX * dT + ax * dT * dT / 2;
@@ -68,7 +68,7 @@ public class Ball extends View {
          * constrained particle in such way that the constraint is
          * satisfied.
          */
-        public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
+        public boolean resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
             final float xmax = mHorizontalBound;
             final float ymax = mVerticalBound;
             float x =   mPosX*mMetersToPixelsX;
@@ -87,17 +87,19 @@ public class Ball extends View {
 
             //Check for detection with bricks
             float radius = (sBallDiameter/2);
-int found = 0;
+boolean found = false;
             config.startIterating();
-            while(config.hasMoreConfig() && (found == 0))
+            while(config.hasMoreConfig() && !found)
             {
                 BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
 
 
-                if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - sBallDiameter*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+sBallDiameter*mMetersToPixelsY)))
+                if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
                 {
                     mPosX=mOldPosX;
                     mPosY=mOldPosY;
+                    found =true;
+                    break;
                 }
 
 //                if((sx>0) && ( x<= (brickConfig.getX()+brickConfig.getWidth())) && ((mOldPosX*mMetersToPixelsX) >= (brickConfig.getX()+brickConfig.getWidth())) && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
@@ -188,22 +190,25 @@ int found = 0;
             if (x < xOrigin) {
                 mPosX = 0; //xOrigin/mMetersToPixelsX
                 mVelX = 0;
+                found =true;
             } else if (x > mHorizontalBound) {
                 mPosX = mHorizontalBound/mMetersToPixelsX;
                 mVelX = 0;
+                found =true;
             }
 
 
             if (y < yOrigin) {
                 mPosY = 0; //yOrigin/mMetersToPixelsY
                 mVelY = 0;
+                found =true;
             }
             else if (y > mVerticalBound) {
                 mPosY = -(mVerticalBound/mMetersToPixelsY);
                 mVelY = 0;
+                found = true;
             }
-
-
+            return found;
         }
 
     /*
@@ -215,8 +220,13 @@ int found = 0;
         if (mLastT != 0) {
             final float dT = (float) (t - mLastT) / 1000.f /** (1.0f / 1000000000.0f)*/;
 
-                computePhysics(sx, sy, dT);
+            computePhysics(sx, sy, dT);
             resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig,  xOrigin,  yOrigin, sx, sy);
+            {
+                mOldPosX = mPosX;
+                mOldPosY = mPosY;
+
+            }
 
         }
         mLastT = t;
