@@ -103,13 +103,13 @@ boolean found = false;
                     if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX))
                         mPosX = mOldPosX;
 
-                    if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
+                    else if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
                         mPosX = mOldPosX;
 
-                    if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
+                    else if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
                         mPosY = mOldPosY;
 
-                    if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
+                    else if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
                         mPosY=mOldPosY;
 
 //                    if(!config.posX_BelongsToBrick(xCenter))
