@@ -73,6 +73,9 @@ public class Ball extends View {
             final float ymax = mVerticalBound;
             float x =   mPosX*mMetersToPixelsX;
             float y =  - mPosY*mMetersToPixelsY;
+            float xCenter = (x+(sBallDiameter*mMetersToPixelsX)/2);
+            float yCenter = ( y + (sBallDiameter*mMetersToPixelsY)/2);
+
 
 //            if(sx>0)
 //                x=-x;
@@ -83,40 +86,52 @@ public class Ball extends View {
 //                y=-y;
 
             //Check for detection with bricks
+            float radius = (sBallDiameter/2);
 int found = 0;
             config.startIterating();
             while(config.hasMoreConfig() && (found == 0))
             {
                 BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
 
-                if((sx>0) && (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth()))  && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
+
+                if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - sBallDiameter*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+sBallDiameter*mMetersToPixelsY)))
                 {
-                    //if(sx<0)
-                        //mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
-//                        else
-                        mPosX = (brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX;
-                    mVelX = 0;
-                    found = 1;
+                    mPosX=mOldPosX;
+                    mPosY=mOldPosY;
                 }
 
-                else if((sx<0) && ((x+sBallDiameter*mMetersToPixelsX) >brickConfig.getX()) && ( (x+sBallDiameter*mMetersToPixelsX)< (brickConfig.getX()+brickConfig.getWidth()))  && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
-                {
-                   // if(sx<0)
-                        mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
-//                    else
+//                if((sx>0) && ( x<= (brickConfig.getX()+brickConfig.getWidth())) && ((mOldPosX*mMetersToPixelsX) >= (brickConfig.getX()+brickConfig.getWidth())) && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
+//                {
+//                    Log.v("case ", "1");
+//                    //if(sx<0)
+//                        //mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
+////                        else
 //                        mPosX = (brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX;
-                    mVelX = 0;
-                    found = 1;
-                }
+//                    mVelX = 0;
+//                    found = 1;
+//                }
+//
+//                else if((sx<0) &&  ((x+sBallDiameter*mMetersToPixelsX) >brickConfig.getX()) && ( (mOldPosX*mMetersToPixelsX)< (brickConfig.getX()))  && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
+//                {
+//                   // if(sx<0)
+//                    Log.v("case ", "2");
+//                        mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
+////                    else
+////                        mPosX = (brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX;
+//                    mVelX = 0;
+//                    found = 1;
+//                }
 
-                if((sy<0) && (y >brickConfig.getY()) && ( y< (brickConfig.getY()+brickConfig.getHeight()))  && (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth())))
-                {
+                //float x =   mPosX*mMetersToPixelsX;
 
-                    mPosY = (brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY;
-                    mPosY = -mPosY;
-                    mVelY = 0;
-                    found = 1;
-                }
+//                if((sy>0) && ((y+sBallDiameter*mMetersToPixelsY) >= (brickConfig.getY()+brickConfig.getHeight())) && ((mOldPosY*mMetersToPixelsY) < (brickConfig.getY()+brickConfig.getHeight())) &&  (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth())))
+//                {
+//                    Log.v("case ", "3");
+//                    mPosY = (brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY;
+//                    mPosY = -mPosY;
+//                    mVelY = 0;
+//                    found = 1;
+//                }
 //                else if((sy>0) && ((y+sBallDiameter*mMetersToPixelsY) >brickConfig.getY()) && ( (y+sBallDiameter*mMetersToPixelsY)< (brickConfig.getY()+brickConfig.getHeight()))  && (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth())))
 //                {
 //                    //if(sx<0)
