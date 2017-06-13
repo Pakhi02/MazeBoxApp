@@ -73,8 +73,11 @@ public class Ball extends View {
             final float ymax = mVerticalBound;
             float x =   mPosX*mMetersToPixelsX;
             float y =  - mPosY*mMetersToPixelsY;
+            float radius = (sBallDiameter/2);
             float xCenter = (x+(sBallDiameter*mMetersToPixelsX)/2);
             float yCenter = ( y + (sBallDiameter*mMetersToPixelsY)/2);
+            float oldXCenter = (mOldPosX*mMetersToPixelsX + radius*mMetersToPixelsX);
+            float oldYCenter = ((-mOldPosY)*mMetersToPixelsY + radius*mMetersToPixelsY);
 
 
 //            if(sx>0)
@@ -86,7 +89,7 @@ public class Ball extends View {
 //                y=-y;
 
             //Check for detection with bricks
-            float radius = (sBallDiameter/2);
+
 boolean found = false;
             config.startIterating();
             while(config.hasMoreConfig() && !found)
@@ -96,8 +99,25 @@ boolean found = false;
 
                 if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
                 {
-                    mPosX=mOldPosX;
-                    mPosY=mOldPosY;
+
+                    if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX))
+                        mPosX = mOldPosX;
+
+                    if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
+                        mPosX = mOldPosX;
+
+                    if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
+                        mPosY = mOldPosY;
+
+                    if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
+                        mPosY=mOldPosY;
+
+//                    if(!config.posX_BelongsToBrick(xCenter))
+//                        mPosX=mOldPosX;
+//
+//                    if(!config.posY_BelongsToBrick(-yCenter))
+//                        mPosY=mOldPosY;
+
                     found =true;
                     break;
                 }
