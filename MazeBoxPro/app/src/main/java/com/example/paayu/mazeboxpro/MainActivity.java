@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mDisplay = mWindowManager.getDefaultDisplay();
 
+
         // Create a bright wake lock
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
                 .getName());
