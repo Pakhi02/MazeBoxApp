@@ -8,233 +8,134 @@ import android.util.Log;
 import android.view.View;
 
 public class Ball extends View {
-        private float mPosX = (float) Math.random();
-        private float mPosY = (float) Math.random();
+    private float mPosX = (float) Math.random();
+    private float mPosY = (float) Math.random();
     private float mOldPosX = (float) Math.random();
     private float mOldPosY = (float) Math.random();
 
     private float mVelX;
-        private float mVelY;
-        private float sBallDiameter;
-        private float sBallDiameter2;
-        private long mLastT;
+    private float mVelY;
+    private float sBallDiameter;
+    private long mLastT;
 
-        private float mMetersToPixelsX;
-        private float mMetersToPixelsY;
+    private float mMetersToPixelsX;
+    private float mMetersToPixelsY;
 
-    public Ball(Context context, float diam,float mMetersToPixelsX,float mMetersToPixelsY) {
-            super(context);
+    public Ball(Context context, float diam,float mMetersToPixelsX,float mMetersToPixelsY)
+    {
+
+        super(context);
         sBallDiameter = diam;
-        sBallDiameter2 = diam*diam;
         setBackgroundResource(R.drawable.ball);
         this.mMetersToPixelsX=mMetersToPixelsX;
         this.mMetersToPixelsY=mMetersToPixelsY;
         mOldPosY=0;
         mOldPosX=0;
-        }
+        setTranslationX(0);
+        setTranslationY(0);
+    }
 
-        public Ball(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
+    public Ball(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-        public Ball(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-        }
+    public Ball(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        public Ball(Context context, AttributeSet attrs, int defStyleAttr,
-                        int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-        }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public Ball(Context context, AttributeSet attrs, int defStyleAttr,
+                    int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
 
-        public void computePhysics(float sx, float sy, float dT) {
+    public void computePhysics(float sx, float sy, float dT) {
 
-            final float ax = -sx/5;
-            final float ay = -sy/5;
-
-
-            mPosX += mVelX * dT + ax * dT * dT / 2;
-            mPosY += mVelY * dT + ay * dT * dT / 2;
-
-            mVelX += ax * dT;
-            mVelX = mVelX/1.5f;
-            mVelY += ay * dT;
-            mVelY = mVelY/1.5f;
-        }
-
-        /*
-         * Resolving constraints and collisions with the Verlet integrator
-         * can be very simple, we simply need to move a colliding or
-         * constrained particle in such way that the constraint is
-         * satisfied.
-         */
-        public boolean resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
-            final float xmax = mHorizontalBound;
-            final float ymax = mVerticalBound;
-            float x =   mPosX*mMetersToPixelsX;
-            float y =  - mPosY*mMetersToPixelsY;
-            float radius = (sBallDiameter/2);
-            float xCenter = (x+(sBallDiameter*mMetersToPixelsX)/2);
-            float yCenter = ( y + (sBallDiameter*mMetersToPixelsY)/2);
-            float oldXCenter = (mOldPosX*mMetersToPixelsX + radius*mMetersToPixelsX);
-            float oldYCenter = ((-mOldPosY)*mMetersToPixelsY + radius*mMetersToPixelsY);
+        final float ax = -sx/5;
+        final float ay = -sy/5;
 
 
-//            if(sx>0)
-//                x=-x;
-////            else
-////                x=2*x;
-//
-//            if(sy>0)
-//                y=-y;
+        mPosX += mVelX * dT + ax * dT * dT / 2;
+        mPosY += mVelY * dT + ay * dT * dT / 2;
 
-            //Check for detection with bricks
-
-boolean found = false;
-            config.startIterating();
-            while(config.hasMoreConfig() && !found)
-            {
-                BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
-
-
-                if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
-                {
-
-                    if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX))
-                        mPosX = mOldPosX;
-
-                    else if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
-                        mPosX = mOldPosX;
-
-                    else if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
-                        mPosY = mOldPosY;
-
-                    else if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
-                        mPosY=mOldPosY;
-
-//                    if(!config.posX_BelongsToBrick(xCenter))
-//                        mPosX=mOldPosX;
-//
-//                    if(!config.posY_BelongsToBrick(-yCenter))
-//                        mPosY=mOldPosY;
-
-                    found =true;
-                    break;
-                }
-
-//                if((sx>0) && ( x<= (brickConfig.getX()+brickConfig.getWidth())) && ((mOldPosX*mMetersToPixelsX) >= (brickConfig.getX()+brickConfig.getWidth())) && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
-//                {
-//                    Log.v("case ", "1");
-//                    //if(sx<0)
-//                        //mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
-////                        else
-//                        mPosX = (brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX;
-//                    mVelX = 0;
-//                    found = 1;
-//                }
-//
-//                else if((sx<0) &&  ((x+sBallDiameter*mMetersToPixelsX) >brickConfig.getX()) && ( (mOldPosX*mMetersToPixelsX)< (brickConfig.getX()))  && (y>brickConfig.getY()) && (y<(brickConfig.getY()+brickConfig.getHeight())))
-//                {
-//                   // if(sx<0)
-//                    Log.v("case ", "2");
-//                        mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
-////                    else
-////                        mPosX = (brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX;
-//                    mVelX = 0;
-//                    found = 1;
-//                }
-
-                //float x =   mPosX*mMetersToPixelsX;
-
-//                if((sy>0) && ((y+sBallDiameter*mMetersToPixelsY) >= (brickConfig.getY()+brickConfig.getHeight())) && ((mOldPosY*mMetersToPixelsY) < (brickConfig.getY()+brickConfig.getHeight())) &&  (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth())))
-//                {
-//                    Log.v("case ", "3");
-//                    mPosY = (brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY;
-//                    mPosY = -mPosY;
-//                    mVelY = 0;
-//                    found = 1;
-//                }
-//                else if((sy>0) && ((y+sBallDiameter*mMetersToPixelsY) >brickConfig.getY()) && ( (y+sBallDiameter*mMetersToPixelsY)< (brickConfig.getY()+brickConfig.getHeight()))  && (x >brickConfig.getX()) && ( x< (brickConfig.getX()+brickConfig.getWidth())))
-//                {
-//                    //if(sx<0)
-//                    //mPosX = (brickConfig.getX() -sBallDiameter*mMetersToPixelsX)/mMetersToPixelsX;
-////                        else
-//                    mPosY = (brickConfig.getY()-sBallDiameter*mMetersToPixelsY)/mMetersToPixelsY;
-//                    mPosY = -mPosY;
-//                    mVelY = 0;
-//                    found = 1;
-//                }
-
-                //else if(mPosX < mOldPosX)
-//                {
-//                    float xStart=(brickConfig.getX()/mMetersToPixelsX);
-//                    float xEnd=((brickConfig.getX()+brickConfig.getWidth())/mMetersToPixelsX);
-//                    //Coming from right
-//                    if( (x >xStart) && ( x< xEnd) )
-//                    {
-//                        mPosX = xEnd;
-//                        mVelX = 0;
-//                        found = 1;
-//                    }
-//                }
-
-//                if(mPosY > mOldPosY)
-//                {
-//                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
-//                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
-//                    //Coming from left
-//                    if( (y >yStart) && ( y< yEnd) )
-//                    {
-//                        mPosY =yStart;
-//                        mVelY = 0;
-//                        found = 1;
-//                    }
-//                }
-//                else if(mPosX < mOldPosX)
-//                {
-//                    float yStart=(brickConfig.getY()/mMetersToPixelsY);
-//                    float yEnd=((brickConfig.getY()+brickConfig.getHeight())/mMetersToPixelsY);
-//                    //Coming from right
-//                    if( (y >yStart) && ( y< yEnd) )
-//                    {
-//                        mPosY = yEnd;
-//                        mVelY = 0;
-//                        found = 1;
-//                    }
-                //}
-
-            }
-
-            //Check for detection with boundaries
-
-            if (x < xOrigin) {
-                mPosX = 0; //xOrigin/mMetersToPixelsX
-                mVelX = 0;
-                found =true;
-            } else if (x > mHorizontalBound) {
-                mPosX = mHorizontalBound/mMetersToPixelsX;
-                mVelX = 0;
-                found =true;
-            }
-
-
-            if (y < yOrigin) {
-                mPosY = 0; //yOrigin/mMetersToPixelsY
-                mVelY = 0;
-                found =true;
-            }
-            else if (y > mVerticalBound) {
-                mPosY = -(mVerticalBound/mMetersToPixelsY);
-                mVelY = 0;
-                found = true;
-            }
-            return found;
-        }
+        mVelX += ax * dT;
+        mVelX = mVelX/1.5f;
+        mVelY += ay * dT;
+        mVelY = mVelY/1.5f;
+    }
 
     /*
-            * Update the position of each particle in the system using the
-            * Verlet integrator.
-            */
+     * Resolving constraints and collisions with the Verlet integrator
+     * can be very simple, we simply need to move a colliding or
+     * constrained particle in such way that the constraint is
+     * satisfied.
+     */
+    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
+        float x =   mPosX*mMetersToPixelsX;
+        float y =  - mPosY*mMetersToPixelsY;
+        float radius = (sBallDiameter/2);
+        float xCenter = (x+(sBallDiameter*mMetersToPixelsX)/2);
+        float yCenter = ( y + (sBallDiameter*mMetersToPixelsY)/2);
+        float oldXCenter = (mOldPosX*mMetersToPixelsX + radius*mMetersToPixelsX);
+        float oldYCenter = ((-mOldPosY)*mMetersToPixelsY + radius*mMetersToPixelsY);
+
+        //Check for detection with bricks
+
+        config.startIterating();
+
+        while(config.hasMoreConfig())
+        {
+            BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+
+            if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
+            {
+
+                if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX))
+                    mPosX = mOldPosX;
+
+                else if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
+                    mPosX = mOldPosX;
+
+                else if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
+                    mPosY = mOldPosY;
+
+                else if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
+                    mPosY=mOldPosY;
+
+                break;
+            }
+
+        }
+
+        //Check for detection with boundaries
+
+        if (x < xOrigin)
+        {
+            mPosX = 0;
+            mVelX = 0;
+        }
+        else if (x > mHorizontalBound)
+        {
+            mPosX = mHorizontalBound/mMetersToPixelsX;
+            mVelX = 0;
+        }
+
+        if (y < yOrigin)
+        {
+            mPosY = 0;
+            mVelY = 0;
+        }
+        else if (y > mVerticalBound)
+        {
+            mPosY = -(mVerticalBound/mMetersToPixelsY);
+            mVelY = 0;
+        }
+    }
+
+    /*
+        * Update the position of each particle in the system using the
+        * Verlet integrator.
+        */
     public void updatePositions(float sx, float sy, long timestamp, float mHorizontalBound, float mVerticalBound, BrickConfiguration brickConfig, float xOrigin, float yOrigin) {
         final long t = timestamp;
         if (mLastT != 0) {
@@ -242,12 +143,9 @@ boolean found = false;
 
             computePhysics(sx, sy, dT);
             resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig,  xOrigin,  yOrigin, sx, sy);
-            {
-                mOldPosX = mPosX;
-                mOldPosY = mPosY;
 
-            }
-
+            mOldPosX = mPosX;
+            mOldPosY = mPosY;
         }
         mLastT = t;
     }

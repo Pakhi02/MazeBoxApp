@@ -19,10 +19,10 @@ public class BrickConfiguration {
     private float mYOrigin;
     int ii=0;
 
-    int horizontalCells=10;
-    int verticalCells=20;
-    int screenWidth;
-    int screenHeight;
+    private int horizontalCells=10;
+    private int verticalCells=20;
+    private int screenWidth;
+    private int screenHeight;
 
 
     BrickConfiguration(int screenWidth,int screenHeight){
@@ -33,13 +33,6 @@ public class BrickConfiguration {
     static Iterator<Configuration> brickConfigurationIterator;
     void loadBrickData(){
        brickConfigList = new Vector<>();
-        Log.v("called pos x in conf", String.valueOf(mXOrigin));
-
-
-
-        Log.v("called pos y in conf", String.valueOf(mYOrigin));
-       // int i=0,j=0;
-
 
         float cellWidth=((float)screenWidth/(float)horizontalCells);
         float cellHeight=((float)screenHeight/(float)verticalCells);
@@ -59,14 +52,6 @@ public class BrickConfiguration {
         for(float j=1;j<verticalCells;j++){
             brickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
         }
-
-        /*for(int i=0;i<horizontalCells;i++) {
-            for(int j=0;j<verticalCells;j++) {
-                //brickConfigList.add(new Configuration(120, i*40, .005f, .005f));
-                brickConfigList.add(new Configuration(0.001f, i * 0.002f, .005f, .005f));
-            }
-        }
-*/
     }
 
     void startIterating(){
@@ -80,6 +65,50 @@ public class BrickConfiguration {
     Configuration getNextConfiguration(){
         return brickConfigList.elementAt(ii++);
     }
+
+//    boolean posX_BelongsToBrick(float x)
+//    {
+//        float xStart, xEnd;
+//        int index = ii-1;
+//        boolean res=false;
+//        if(index!=0)
+//        {
+//            xStart = brickConfigList.elementAt(index-1).getX();
+//            xEnd = xStart+brickConfigList.elementAt(index-1).getWidth();
+//            if((x>=xStart) && (x<=xEnd))
+//                res = true;
+//        }
+//        if(index<(brickConfigList.size()-1))
+//        {
+//            xStart = brickConfigList.elementAt(index+1).getX();
+//            xEnd = xStart+brickConfigList.elementAt(index+1).getWidth();
+//            if((x>=xStart) && (x<=xEnd))
+//                res = true;
+//        }
+//        return res;
+//    }
+//    boolean posY_BelongsToBrick(float y)
+//    {
+//
+//        float yStart, yEnd;
+//        int index = ii-1;
+//        boolean res=false;
+//        if(index!=0)
+//        {
+//            yStart = brickConfigList.elementAt(index-1).getY();
+//            yEnd = yStart+brickConfigList.elementAt(index-1).getHeight();
+//            if((y>=yStart) && (y<=yEnd))
+//                res = true;
+//        }
+//        if(index<(brickConfigList.size()-1))
+//        {
+//            yStart = brickConfigList.elementAt(index+1).getY();
+//            yEnd = yStart+brickConfigList.elementAt(index+1).getHeight();
+//            if((y>=yStart) && (y<=yEnd))
+//                res = true;
+//        }
+//        return res;
+//    }
     class Configuration{
         float x,y;
         float width,height;
