@@ -19,8 +19,8 @@ public class BrickConfiguration {
     private float mYOrigin;
     int ii=0;
 
-    int horizontalCells=40;
-    int verticalCells=50;
+    int horizontalCells=10;
+    int verticalCells=20;
     int screenWidth;
     int screenHeight;
 
@@ -38,21 +38,23 @@ public class BrickConfiguration {
         float cellHeight=((float)screenHeight/(float)verticalCells);
 
         for(float j=0;j<verticalCells-3;j++){
-            brickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+            brickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
         }
 
         for(float j=3;j<verticalCells;j++){
-            brickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+            brickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
         }
 
         for(float j=0;j<verticalCells-3;j++){
-            brickConfigList.add(new Configuration((cellWidth)*11, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+            brickConfigList.add(new Configuration((cellWidth)*11, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
         }
 
         for(float j=3;j<verticalCells;j++){
-            brickConfigList.add(new Configuration((cellWidth)*15, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3));
+            brickConfigList.add(new Configuration((cellWidth)*15, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
         }
 
+
+        brickConfigList.add(new Configuration((cellWidth)*(horizontalCells-1), (cellHeight)*(verticalCells-1),(cellWidth)+3, (cellHeight)+3,1));
         /*for(int i=0;i<horizontalCells;i++) {
             for(int j=0;j<verticalCells;j++) {
                 //brickConfigList.add(new Configuration(120, i*40, .005f, .005f));
@@ -73,14 +75,30 @@ public class BrickConfiguration {
     Configuration getNextConfiguration(){
         return brickConfigList.elementAt(ii++);
     }
+
+    public Configuration getGoalBrick(){
+        startIterating();
+        while (hasMoreConfig()){
+            Configuration config = getNextConfiguration();
+            if(config.type==1)
+                return  config;
+        }
+    }
+
+
     class Configuration{
         float x,y;
         float width,height;
-        Configuration(float x,float y,float width,float height){
+
+        //0 for normal
+        //1 for end
+        int type;
+        Configuration(float x,float y,float width,float height,int type){
             this.x=x;
             this.y=y;
             this.width=width;
             this.height=height;
+            this.type = type;
         }
         float getX(){
             return x;
