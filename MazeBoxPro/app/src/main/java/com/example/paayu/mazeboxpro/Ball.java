@@ -59,9 +59,9 @@ public class Ball extends View {
         mPosY += mVelY * dT + ay * dT * dT / 2;
 
         mVelX += ax * dT;
-        mVelX = mVelX/1.5f;
+        //mVelX = mVelX/1.5f;
         mVelY += ay * dT;
-        mVelY = mVelY/1.5f;
+        //mVelY = mVelY/1.5f;
     }
 
     /*
@@ -90,21 +90,46 @@ public class Ball extends View {
             if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
             {
 
-                if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX))
+                if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX)) {
                     mPosX = mOldPosX;
+                    mVelX=0;
+                }
 
-                else if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
+                else if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) {
                     mPosX = mOldPosX;
+                    mVelX = 0;
+                }
 
-                else if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
+                else if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY)) {
                     mPosY = mOldPosY;
+                    mVelY = 0;
+                }
 
-                else if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
-                    mPosY=mOldPosY;
+                else if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)) {
+                    mPosY = mOldPosY;
+                    mVelY = 0;
+                }
 
                 break;
             }
+            else if( ( (oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) ) || ( (oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))))
+            {
+                if((oldYCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (oldYCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
+                {
+                    mPosX = mOldPosX;
+                    mVelX=0;
+                }
+                break;
+            }
 
+            else if( ( (oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY))) || ((oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))))
+            {
+                if((oldXCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (oldXCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))) {
+                    mPosY = mOldPosY;
+                    mVelY = 0;
+                }
+                break;
+            }
         }
 
         //Check for detection with boundaries
