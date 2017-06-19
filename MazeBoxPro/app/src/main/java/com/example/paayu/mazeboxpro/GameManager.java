@@ -186,18 +186,29 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
         mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound, brickConfig, mXOrigin, mYOrigin);
 
-        final float xc = mXOrigin;
-        final float yc = mYOrigin;
+        final float xO = mXOrigin;
+        final float yO = mYOrigin;
         final float xs = mMetersToPixelsX;
         final float ys = mMetersToPixelsY;
-                /*
-                 * We transform the canvas so that the coordinate system matches
-                 * the sensors coordinate system with the origin in the center
-                 * of the screen and the unit is the meter.
-                 */
-            final float x = xc + mGameBall.getPosX() * xs;
-            final float y = yc - mGameBall.getPosY() * ys;
+        /*
+         * We transform the canvas so that the coordinate system matches
+         * the sensors coordinate system with the origin in the center
+         * of the screen and the unit is the meter.
+         */
+        float x = xO + mGameBall.getPosX() * xs;
+        float y = yO - mGameBall.getPosY() * ys;
+        final float xCenter = x + (sBallDiameter*mMetersToPixelsX)/2;
+        final float yCenter = y + (sBallDiameter*mMetersToPixelsY)/2;
 
+        BrickConfiguration.Configuration goalConfig = brickConfig.getGoalBrick();
+        if(goalConfig.getWidth()!=-1) {
+            final float goalCenterX = goalConfig.getX() + goalConfig.getWidth()/2;
+            final float goalCenterY = goalConfig.getY() + goalConfig.getHeight()/2;
+
+            if( (xCenter == goalCenterX) && (yCenter == goalCenterY))
+                x= mHorizontalBound + sBallDiameter*mMetersToPixelsX;
+                y= mVerticalBound + sBallDiameter*mMetersToPixelsY;
+        }
 
         mGameBall.setTranslationX(x);
         mGameBall.setTranslationY(y);

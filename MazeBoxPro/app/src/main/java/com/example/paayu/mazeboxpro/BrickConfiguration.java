@@ -83,6 +83,7 @@ public class BrickConfiguration {
             if(config.type==1)
                 return  config;
         }
+        return new Configuration(-1f,-1f,-1f,-1f,0);
     }
 
 
