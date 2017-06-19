@@ -8,10 +8,10 @@ import android.util.Log;
 import android.view.View;
 
 public class Ball extends View {
-    private float mPosX = (float) Math.random();
-    private float mPosY = (float) Math.random();
-    private float mOldPosX = (float) Math.random();
-    private float mOldPosY = (float) Math.random();
+    private float mPosX = 0;
+    private float mPosY = 0;
+    private float mOldPosX = 0;
+    private float mOldPosY = 0;
 
     private float mVelX;
     private float mVelY;
@@ -70,66 +70,108 @@ public class Ball extends View {
      * constrained particle in such way that the constraint is
      * satisfied.
      */
-    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
-        float x =   mPosX*mMetersToPixelsX;
-        float y =  - mPosY*mMetersToPixelsY;
-        float radius = (sBallDiameter/2);
-        float xCenter = (x+(sBallDiameter*mMetersToPixelsX)/2);
-        float yCenter = ( y + (sBallDiameter*mMetersToPixelsY)/2);
-        float oldXCenter = (mOldPosX*mMetersToPixelsX + radius*mMetersToPixelsX);
-        float oldYCenter = ((-mOldPosY)*mMetersToPixelsY + radius*mMetersToPixelsY);
 
-        //Check for detection with bricks
 
-        config.startIterating();
+    public Point takeAWalk(double x1,double y1,double x2,double y2,BrickConfiguration config,float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin){
 
-        while(config.hasMoreConfig())
+        double slope = (y2-y1)/(x2-x1);
+        double stepDistance=5;
+        double newX=x1,newY=y1;
+        double oldX=x1,oldY=y1;
+
+
+        if (x2 < xOrigin)
         {
-            BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+            x2 = 0;
+            mVelX = 0;
+        }
+        else if (x2 > mHorizontalBound)
+        {
+            x2 = mHorizontalBound;
+            mVelX = 0;
+        }
 
-            if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
-            {
+        if (y2 < yOrigin)
+        {
+            y2 = 0;
+            mVelY = 0;
+        }
+        else if (y2 > mVerticalBound)
+        {
+            y2 = (mVerticalBound);
+            mVelY = 0;
+        }
+        if( x1!=x2 || y1!=y2 )
+            return new Point(x2,y2);
 
-                if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX))
-                    mPosX = mOldPosX;
+        double xSign = x2-x1 ,ySign = y2-y1;
+        while( (xSign>0 && x2-newX>0) || (xSign<0 && x2-newX<0) || (ySign>0 && y2-newY>0) || (ySign<0 && y2-newY<0) ) {
 
-                else if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
-                    mPosX = mOldPosX;
+            oldX=newX;
+            oldY=newY;
 
-                else if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
-                    mPosY = mOldPosY;
+            if (x2 < x1) {
+                newX = newX - (stepDistance / Math.sqrt(1 + slope * slope));
+            } else {
+                newX = newX + (stepDistance / Math.sqrt(1 + slope * slope));
+            }
 
-                else if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
-                    mPosY=mOldPosY;
+            if (y2 < y1) {
+                newY = newY - (stepDistance / Math.sqrt(1 + slope * slope));
+            } else {
+                newY = newY + (stepDistance / Math.sqrt(1 + slope * slope));
+            }
 
+            if(isColliding(newX,newY,config,mHorizontalBound,mVerticalBound,xOrigin,yOrigin)) {
+                mVelX=0;
+                mVelY=0;
                 break;
             }
 
         }
 
+        return new Point(oldX,oldY);
+
+    }
+
+    boolean isColliding(double x,double y,BrickConfiguration config,float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin){
+
+        double radiusX = (sBallDiameter*mMetersToPixelsX)/2;
+        double radiusY = (sBallDiameter*mMetersToPixelsY)/2;
+
+        double ballCentreX = (x + radiusX);
+        double ballCentreY = (y + radiusY);
+
+
+
+
+        config.startIterating();
+        while(config.hasMoreConfig())
+        {
+            BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+
+            if( (ballCentreX > (brickConfig.getX() - radiusX)) && (ballCentreX < (brickConfig.getX()+ brickConfig.getWidth()+radiusX)) && (ballCentreY > (brickConfig.getY() - radiusY)) && (ballCentreY < (brickConfig.getY()+brickConfig.getHeight()+radiusY)))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
+
+        //Check for detection with bricks
+        double x =   mPosX*mMetersToPixelsX;
+        double y =  - mPosY*mMetersToPixelsY;
+        Point finalPosition = takeAWalk(mOldPosX*mMetersToPixelsX,mOldPosY*mMetersToPixelsY,x,y,config,mHorizontalBound,mVerticalBound,xOrigin,yOrigin);
+
+
+        x = finalPosition.x/mMetersToPixelsX;
+        y = finalPosition.y/mMetersToPixelsY;
         //Check for detection with boundaries
-
-        if (x < xOrigin)
-        {
-            mPosX = 0;
-            mVelX = 0;
-        }
-        else if (x > mHorizontalBound)
-        {
-            mPosX = mHorizontalBound/mMetersToPixelsX;
-            mVelX = 0;
-        }
-
-        if (y < yOrigin)
-        {
-            mPosY = 0;
-            mVelY = 0;
-        }
-        else if (y > mVerticalBound)
-        {
-            mPosY = -(mVerticalBound/mMetersToPixelsY);
-            mVelY = 0;
-        }
+        mPosX = (float)x;
+        mPosY = (float)y;
     }
 
     /*
@@ -158,4 +200,12 @@ public class Ball extends View {
         return mPosY;
     }
 
+}
+class Point{
+    double x;
+    double y;
+    Point(double x,double y){
+        this.x=x;
+        this.y=y;
+    }
 }
