@@ -64,22 +64,6 @@ public class Ball extends View {
         mVelY = mVelY/1.5f;
     }
 
-    /*
-     * Resolving constraints and collisions with the Verlet integrator
-     * can be very simple, we simply need to move a colliding or
-     * constrained particle in such way that the constraint is
-     * satisfied.
-     */
-    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
-        float x =   mPosX*mMetersToPixelsX;
-        float y =  - mPosY*mMetersToPixelsY;
-        float radius = (sBallDiameter/2);
-        float xCenter = (x+(sBallDiameter*mMetersToPixelsX)/2);
-        float yCenter = ( y + (sBallDiameter*mMetersToPixelsY)/2);
-        float oldXCenter = (mOldPosX*mMetersToPixelsX + radius*mMetersToPixelsX);
-        float oldYCenter = ((-mOldPosY)*mMetersToPixelsY + radius*mMetersToPixelsY);
-
-        //Check for detection with bricks
 
     public Point takeAWalk(double x1,double y1,double x2,double y2,BrickConfiguration config,float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin){
 
