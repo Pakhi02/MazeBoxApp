@@ -143,7 +143,7 @@ public class Ball extends View {
         }
         else if (x2 > mHorizontalBound)
         {
-            x2 = mHorizontalBound/mMetersToPixelsX;
+            x2 = mHorizontalBound;
             mVelX = 0;
         }
 
@@ -154,7 +154,8 @@ public class Ball extends View {
         }
         else if (y2 > mVerticalBound)
         {
-            y2 = -(mVerticalBound/mMetersToPixelsY);
+            y2 = mVerticalBound;
+            y2 = mVerticalBound;
             mVelY = 0;
         }
         if( x1!=x2 || y1!=y2 )
