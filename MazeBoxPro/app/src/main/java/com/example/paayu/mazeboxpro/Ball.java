@@ -135,30 +135,34 @@ public class Ball extends View {
         double newX=x1,newY=y1;
         double oldX=x1,oldY=y1;
 
-
+boolean isBoundary =false;
         if (x2 < xOrigin)
         {
             x2 = 0;
             mVelX = 0;
+            isBoundary=true;
         }
         else if (x2 > mHorizontalBound)
         {
             x2 = mHorizontalBound;
             mVelX = 0;
+            isBoundary=true;
         }
 
         if (y2 < yOrigin)
         {
             y2 = 0;
             mVelY = 0;
+            isBoundary=true;
         }
         else if (y2 > mVerticalBound)
         {
             y2 = mVerticalBound;
             y2 = mVerticalBound;
             mVelY = 0;
+            isBoundary=true;
         }
-        if( x1!=x2 || y1!=y2 )
+        if( isBoundary == true )
             return new Point(x2,y2);
 
         double xSign = x2-x1 ,ySign = y2-y1;
