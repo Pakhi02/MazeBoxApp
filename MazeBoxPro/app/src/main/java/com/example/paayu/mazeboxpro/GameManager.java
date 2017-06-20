@@ -45,7 +45,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         Log.v("game manager ", "init");
         mMainObj = (MainActivity) context;
 
-        sBallDiameter = 0.002f;
+        sBallDiameter = 0.004f;
         DisplayMetrics metrics = new DisplayMetrics();
         mMainObj.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -200,15 +200,16 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         final float xCenter = x + (sBallDiameter*mMetersToPixelsX)/2;
         final float yCenter = y + (sBallDiameter*mMetersToPixelsY)/2;
 
-        BrickConfiguration.Configuration goalConfig = brickConfig.getGoalBrick();
-        if(goalConfig.getWidth()!=-1) {
-            final float goalCenterX = goalConfig.getX() + goalConfig.getWidth()/2;
-            final float goalCenterY = goalConfig.getY() + goalConfig.getHeight()/2;
-
-            if( (xCenter == goalCenterX) && (yCenter == goalCenterY))
-                x= mHorizontalBound + sBallDiameter*mMetersToPixelsX;
-                y= mVerticalBound + sBallDiameter*mMetersToPixelsY;
-        }
+//        BrickConfiguration.Configuration goalConfig = brickConfig.getGoalBrick();
+//        if(goalConfig.getWidth()!=-1) {
+//            final float goalCenterX = goalConfig.getX() + goalConfig.getWidth()/2;
+//            final float goalCenterY = goalConfig.getY() + goalConfig.getHeight()/2;
+//
+//            if( (xCenter == goalCenterX) && (yCenter == goalCenterY)) {
+//                x = mHorizontalBound + sBallDiameter * mMetersToPixelsX;
+//                y = mVerticalBound + sBallDiameter * mMetersToPixelsY;
+//            }
+//        }
 
         mGameBall.setTranslationX(x);
         mGameBall.setTranslationY(y);
