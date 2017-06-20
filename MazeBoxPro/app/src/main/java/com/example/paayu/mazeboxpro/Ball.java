@@ -65,6 +65,69 @@ public class Ball extends View {
     }
 
 
+    /*
+    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
+        float x =   mPosX*mMetersToPixelsX;
+        float y =  - mPosY*mMetersToPixelsY;
+        float radius = (sBallDiameter/2);
+        float xCenter = (x+(sBallDiameter*mMetersToPixelsX)/2);
+        float yCenter = ( y + (sBallDiameter*mMetersToPixelsY)/2);
+        float oldXCenter = (mOldPosX*mMetersToPixelsX + radius*mMetersToPixelsX);
+        float oldYCenter = ((-mOldPosY)*mMetersToPixelsY + radius*mMetersToPixelsY);
+
+        //Check for detection with bricks
+
+        config.startIterating();
+
+        while(config.hasMoreConfig())
+        {
+            BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+
+            if( (xCenter > (brickConfig.getX() - radius*mMetersToPixelsX)) && (xCenter < (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX)) && (yCenter > (brickConfig.getY() - radius*mMetersToPixelsY)) && (yCenter < (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY)))
+            {
+
+                if(oldXCenter < (brickConfig.getX() - radius*mMetersToPixelsX))
+                    mPosX = mOldPosX;
+
+                else if(oldXCenter > (brickConfig.getX()+ brickConfig.getWidth()+radius*mMetersToPixelsX))
+                    mPosX = mOldPosX;
+
+                else if(oldYCenter <  (brickConfig.getY() - radius*mMetersToPixelsY))
+                    mPosY = mOldPosY;
+
+                else if(oldYCenter > (brickConfig.getY()+brickConfig.getHeight()+radius*mMetersToPixelsY))
+                    mPosY=mOldPosY;
+
+                break;
+            }
+
+        }
+
+        //Check for detection with boundaries
+
+        if (x < xOrigin)
+        {
+            mPosX = 0;
+            mVelX = 0;
+        }
+        else if (x > mHorizontalBound)
+        {
+            mPosX = mHorizontalBound/mMetersToPixelsX;
+            mVelX = 0;
+        }
+
+        if (y < yOrigin)
+        {
+            mPosY = 0;
+            mVelY = 0;
+        }
+        else if (y > mVerticalBound)
+        {
+            mPosY = -(mVerticalBound/mMetersToPixelsY);
+            mVelY = 0;
+        }
+    }
+     */
     public Point takeAWalk(double x1,double y1,double x2,double y2,BrickConfiguration config,float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin){
 
         double slope = (y2-y1)/(x2-x1);
@@ -80,7 +143,7 @@ public class Ball extends View {
         }
         else if (x2 > mHorizontalBound)
         {
-            x2 = mHorizontalBound;
+            x2 = mHorizontalBound/mMetersToPixelsX;
             mVelX = 0;
         }
 
@@ -91,14 +154,14 @@ public class Ball extends View {
         }
         else if (y2 > mVerticalBound)
         {
-            y2 = (mVerticalBound);
+            y2 = -(mVerticalBound/mMetersToPixelsY);
             mVelY = 0;
         }
         if( x1!=x2 || y1!=y2 )
             return new Point(x2,y2);
 
         double xSign = x2-x1 ,ySign = y2-y1;
-        while( (xSign>0 && x2-newX>0) || (xSign<0 && x2-newX<0) || (ySign>0 && y2-newY>0) || (ySign<0 && y2-newY<0) ) {
+        while( (xSign>0 && (x2-newX)>0) || (xSign<0 && (x2-newX)<0) || (ySign>0 && (y2-newY)>0) || (ySign<0 && (y2-newY)<0) ) {
 
             oldX=newX;
             oldY=newY;
@@ -157,11 +220,11 @@ public class Ball extends View {
         //Check for detection with bricks
         double x =   mPosX*mMetersToPixelsX;
         double y =  - mPosY*mMetersToPixelsY;
-        Point finalPosition = takeAWalk(mOldPosX*mMetersToPixelsX,mOldPosY*mMetersToPixelsY,x,y,config,mHorizontalBound,mVerticalBound,xOrigin,yOrigin);
+        Point finalPosition = takeAWalk(mOldPosX*mMetersToPixelsX,-mOldPosY*mMetersToPixelsY,x,y,config,mHorizontalBound,mVerticalBound,xOrigin,yOrigin);
 
 
         x = finalPosition.x/mMetersToPixelsX;
-        y = finalPosition.y/mMetersToPixelsY;
+        y = -finalPosition.y/mMetersToPixelsY;
         //Check for detection with boundaries
         mPosX = (float)x;
         mPosY = (float)y;
