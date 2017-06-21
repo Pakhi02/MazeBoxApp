@@ -21,16 +21,15 @@ public class Ball extends View {
     private float mMetersToPixelsX;
     private float mMetersToPixelsY;
 
-    public Ball(Context context, float diam,float mMetersToPixelsX,float mMetersToPixelsY)
-    {
+    public Ball(Context context, float diam, float mMetersToPixelsX, float mMetersToPixelsY) {
 
         super(context);
         sBallDiameter = diam;
         setBackgroundResource(R.drawable.ball);
-        this.mMetersToPixelsX=mMetersToPixelsX;
-        this.mMetersToPixelsY=mMetersToPixelsY;
-        mOldPosY=0;
-        mOldPosX=0;
+        this.mMetersToPixelsX = mMetersToPixelsX;
+        this.mMetersToPixelsY = mMetersToPixelsY;
+        mOldPosY = 0;
+        mOldPosX = 0;
         setTranslationX(0);
         setTranslationY(0);
     }
@@ -45,23 +44,23 @@ public class Ball extends View {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Ball(Context context, AttributeSet attrs, int defStyleAttr,
-                    int defStyleRes) {
+                int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     public void computePhysics(float sx, float sy, float dT) {
 
-        final float ax = -sx/5;
-        final float ay = -sy/5;
+        final float ax = -sx / 5;
+        final float ay = -sy / 5;
 
 
         mPosX += mVelX * dT + ax * dT * dT / 2;
         mPosY += mVelY * dT + ay * dT * dT / 2;
 
         mVelX += ax * dT;
-        mVelX = mVelX/1.5f;
+        mVelX = mVelX / 1f;
         mVelY += ay * dT;
-        mVelY = mVelY/1.5f;
+        mVelY = mVelY / 1f;
     }
 
 
@@ -128,111 +127,134 @@ public class Ball extends View {
         }
     }
      */
-    public Point takeAWalk(double x1,double y1,double x2,double y2,BrickConfiguration config,float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin){
+    public Point takeAWalk(double x1, double y1, double x2, double y2, BrickConfiguration config, float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin) {
 
-        double slope = (y2-y1)/(x2-x1);
-        double stepDistance=5;
-        double newX=x1,newY=y1;
-        double oldX=x1,oldY=y1;
+        double slope = (y2 - y1) / (x2 - x1);
+        double stepDistance = 1;
+        double newX = x1, newY = y1;
+        double oldX = x1, oldY = y1;
 
-boolean isBoundary =false;
-        if (x2 < xOrigin)
-        {
+        boolean isBoundary = false;
+        if (x2 < xOrigin) {
             x2 = 0;
             mVelX = 0;
-            isBoundary=true;
-        }
-        else if (x2 > mHorizontalBound)
-        {
+            isBoundary = true;
+        } else if (x2 > mHorizontalBound) {
             x2 = mHorizontalBound;
             mVelX = 0;
-            isBoundary=true;
+            isBoundary = true;
         }
 
-        if (y2 < yOrigin)
-        {
+        if (y2 < yOrigin) {
             y2 = 0;
             mVelY = 0;
-            isBoundary=true;
-        }
-        else if (y2 > mVerticalBound)
-        {
+            isBoundary = true;
+        } else if (y2 > mVerticalBound) {
             y2 = mVerticalBound;
             y2 = mVerticalBound;
             mVelY = 0;
-            isBoundary=true;
+            isBoundary = true;
         }
-        if( isBoundary == true )
-            return new Point(x2,y2);
 
-        double xSign = x2-x1 ,ySign = y2-y1;
-        while( (xSign>0 && (x2-newX)>0) || (xSign<0 && (x2-newX)<0) || (ySign>0 && (y2-newY)>0) || (ySign<0 && (y2-newY)<0) ) {
 
-            oldX=newX;
-            oldY=newY;
+        double xSign = x2 - x1, ySign = y2 - y1;
+        while ((xSign > 0 && (x2 - newX) > 0) || (xSign < 0 && (x2 - newX) < 0) || (ySign > 0 && (y2 - newY) > 0) || (ySign < 0 && (y2 - newY) < 0)) {
 
-            if (x2 < x1) {
-                newX = newX - (stepDistance / Math.sqrt(1 + slope * slope));
-            } else {
-                newX = newX + (stepDistance / Math.sqrt(1 + slope * slope));
-            }
+            oldX = newX;
+            oldY = newY;
+            double tDistance;
+            tDistance = Math.sqrt((x2 - newX) * (x2 - newX) + (y2 - newY) * (y2 - newY));
+            newX = newX + (stepDistance / tDistance) * (x2 - newX);
+            newY = newY + (stepDistance / tDistance) * (y2 - newY);
 
-            if (y2 < y1) {
-                newY = newY - (stepDistance / Math.sqrt(1 + slope * slope));
-            } else {
-                newY = newY + (stepDistance / Math.sqrt(1 + slope * slope));
-            }
+            int result = collidingOnBrick(newX, newY, config, mHorizontalBound, mVerticalBound, xOrigin, yOrigin);
+            if (result != -1) {
+                BrickConfiguration.Configuration culpritBrick = config.getBrickAtIndex(result);
+                double radiusX = (sBallDiameter * mMetersToPixelsX) / 2;
+                double radiusY = (sBallDiameter * mMetersToPixelsY) / 2;
 
-            if(isColliding(newX,newY,config,mHorizontalBound,mVerticalBound,xOrigin,yOrigin)) {
-                mVelX=0;
-                mVelY=0;
+                double oldBallCentreX = (oldX + radiusX);
+                double oldBallCentreY = (oldY + radiusY);
+
+//                //ball is on Left side of brick
+//                if (oldBallCentreX < (culpritBrick.getX() - radiusX) && oldBallCentreY < (culpritBrick.getY() + culpritBrick.getHeight() + radiusY) && oldBallCentreY > culpritBrick.getY() - radiusY)
+//                    mVelX = -mVelX / 4;
+//                else
+//                    //ball is on Right side of brick
+//                    if (oldBallCentreX > (culpritBrick.getX() + culpritBrick.getWidth() +radiusX) && oldBallCentreY < (culpritBrick.getY() + culpritBrick.getHeight() + radiusY) && oldBallCentreY > culpritBrick.getY() - radiusY)
+//                        mVelX = -mVelX / 4;
+//                    else
+//                        //ball is on Top side of brick
+//                        if (oldBallCentreY < (culpritBrick.getY() - radiusY) && oldBallCentreX < (culpritBrick.getX() + culpritBrick.getWidth() + radiusX) && oldBallCentreX > culpritBrick.getX() - radiusX)
+//                            mVelY = -mVelY / 4;
+//                        else
+//                            //ball is on Bottom side of brick
+//                            if (oldBallCentreY > (culpritBrick.getY() +culpritBrick.getHeight()+ radiusY) && oldBallCentreX < (culpritBrick.getX() + culpritBrick.getWidth() + radiusX) && oldBallCentreX > culpritBrick.getX() - radiusX)
+//                                mVelY = -mVelY / 4;
+
+
+                //ball is on Left/right side of brick
+                //if( (oldBallCentreX < (culpritBrick.getX() - radiusX) ) || (oldBallCentreX > (culpritBrick.getX() + culpritBrick.getWidth() +radiusX) ))
+                if( (oldBallCentreX > (culpritBrick.getX() - radiusX) ) && (oldBallCentreX < (culpritBrick.getX() + culpritBrick.getWidth() +radiusX) ))
+                        mVelX = 0;
+                else {
+                    oldX = newX;
+                    mVelY=0;
+                }
+                //ball is on Top/bottom side of brick
+                //if( (oldBallCentreY < (culpritBrick.getY() - radiusY) ) || (oldBallCentreY > (culpritBrick.getY() +culpritBrick.getHeight()+ radiusY) ))
+                if( (oldBallCentreY > (culpritBrick.getY() - radiusY) ) && (oldBallCentreY < (culpritBrick.getY() +culpritBrick.getHeight()+ radiusY) ))
+                        mVelY = 0;
+                else {
+                    oldY = newY;
+                    mVelX=0;
+                }
+
                 break;
             }
 
         }
 
-        return new Point(oldX,oldY);
+        return new Point(oldX, oldY);
 
     }
 
-    boolean isColliding(double x,double y,BrickConfiguration config,float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin){
+    int collidingOnBrick(double x, double y, BrickConfiguration config, float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin) {
 
-        double radiusX = (sBallDiameter*mMetersToPixelsX)/2;
-        double radiusY = (sBallDiameter*mMetersToPixelsY)/2;
+        double radiusX = (sBallDiameter * mMetersToPixelsX) / 2;
+        double radiusY = (sBallDiameter * mMetersToPixelsY) / 2;
 
         double ballCentreX = (x + radiusX);
         double ballCentreY = (y + radiusY);
 
 
-
-
         config.startIterating();
-        while(config.hasMoreConfig())
-        {
+        int jj = 0;
+        while (config.hasMoreConfig()) {
             BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
 
-            if( (ballCentreX > (brickConfig.getX() - radiusX)) && (ballCentreX < (brickConfig.getX()+ brickConfig.getWidth()+radiusX)) && (ballCentreY > (brickConfig.getY() - radiusY)) && (ballCentreY < (brickConfig.getY()+brickConfig.getHeight()+radiusY)))
-            {
-                return true;
+            if ((ballCentreX > (brickConfig.getX() - radiusX)) && (ballCentreX < (brickConfig.getX() + brickConfig.getWidth() + radiusX)) && (ballCentreY > (brickConfig.getY() - radiusY)) && (ballCentreY < (brickConfig.getY() + brickConfig.getHeight() + radiusY))) {
+                return jj;
             }
+            jj++;
         }
-        return false;
+        return -1;
     }
 
 
-    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config,  float xOrigin, float yOrigin, float sx, float sy) {
+    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config, float xOrigin, float yOrigin, float sx, float sy) {
 
         //Check for detection with bricks
-        double x =   mPosX*mMetersToPixelsX;
-        double y =  - mPosY*mMetersToPixelsY;
-        Point finalPosition = takeAWalk(mOldPosX*mMetersToPixelsX,-mOldPosY*mMetersToPixelsY,x,y,config,mHorizontalBound,mVerticalBound,xOrigin,yOrigin);
+        double x = mPosX * mMetersToPixelsX;
+        double y = -mPosY * mMetersToPixelsY;
+        Point finalPosition = takeAWalk(mOldPosX * mMetersToPixelsX, -mOldPosY * mMetersToPixelsY, x, y, config, mHorizontalBound, mVerticalBound, xOrigin, yOrigin);
 
 
-        x = finalPosition.x/mMetersToPixelsX;
-        y = -finalPosition.y/mMetersToPixelsY;
+        x = finalPosition.x / mMetersToPixelsX;
+        y = -finalPosition.y / mMetersToPixelsY;
         //Check for detection with boundaries
-        mPosX = (float)x;
-        mPosY = (float)y;
+        mPosX = (float) x;
+        mPosY = (float) y;
     }
 
     /*
@@ -245,7 +267,7 @@ boolean isBoundary =false;
             final float dT = (float) (t - mLastT) / 1000.f /** (1.0f / 1000000000.0f)*/;
 
             computePhysics(sx, sy, dT);
-            resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig,  xOrigin,  yOrigin, sx, sy);
+            resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig, xOrigin, yOrigin, sx, sy);
 
             mOldPosX = mPosX;
             mOldPosY = mPosY;
@@ -262,11 +284,13 @@ boolean isBoundary =false;
     }
 
 }
-class Point{
+
+class Point {
     double x;
     double y;
-    Point(double x,double y){
-        this.x=x;
-        this.y=y;
+
+    Point(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 }

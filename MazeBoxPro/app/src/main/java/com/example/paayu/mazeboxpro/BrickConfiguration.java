@@ -76,6 +76,12 @@ public class BrickConfiguration {
         return brickConfigList.elementAt(ii++);
     }
 
+    Configuration getBrickAtIndex(int index){
+        if(index > brickConfigList.size())
+            return null;
+        return brickConfigList.elementAt(index);
+    }
+
     public Configuration getGoalBrick(){
         startIterating();
         while (hasMoreConfig()){
