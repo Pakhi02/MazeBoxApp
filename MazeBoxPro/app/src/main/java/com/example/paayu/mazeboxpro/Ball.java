@@ -130,7 +130,7 @@ public class Ball extends View {
     public Point takeAWalk(double x1, double y1, double x2, double y2, BrickConfiguration config, float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin) {
 
         double slope = (y2 - y1) / (x2 - x1);
-        double stepDistance = 8;
+        double stepDistance = 3;
         double newX = x1, newY = y1;
         double oldX = x1, oldY = y1;
 
@@ -173,6 +173,12 @@ public class Ball extends View {
             int result = collidingOnBrick(newX, newY, config, mHorizontalBound, mVerticalBound, xOrigin, yOrigin);
             if (result != -1) {
                 BrickConfiguration.Configuration culpritBrick = config.getBrickAtIndex(result);
+
+                if(culpritBrick == config.getGoalBrick())
+                {
+                    return new Point(-1,-1);
+                }
+
                 double radiusX = (sBallDiameter * mMetersToPixelsX) / 2;
                 double radiusY = (sBallDiameter * mMetersToPixelsY) / 2;
 
@@ -247,37 +253,42 @@ public class Ball extends View {
     }
 
 
-    public void resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config, float xOrigin, float yOrigin, float sx, float sy) {
+    public boolean resolveCollisionWithBounds(float mHorizontalBound, float mVerticalBound, BrickConfiguration config, float xOrigin, float yOrigin, float sx, float sy) {
 
         //Check for detection with bricks
         double x = mPosX * mMetersToPixelsX;
         double y = -mPosY * mMetersToPixelsY;
         Point finalPosition = takeAWalk(mOldPosX * mMetersToPixelsX, -mOldPosY * mMetersToPixelsY, x, y, config, mHorizontalBound, mVerticalBound, xOrigin, yOrigin);
 
+        if(finalPosition.x==-1 && finalPosition.y==-1)
+            return false;
 
         x = finalPosition.x / mMetersToPixelsX;
         y = -finalPosition.y / mMetersToPixelsY;
         //Check for detection with boundaries
         mPosX = (float) x;
         mPosY = (float) y;
+        return true;
     }
 
     /*
         * Update the position of each particle in the system using the
         * Verlet integrator.
         */
-    public void updatePositions(float sx, float sy, long timestamp, float mHorizontalBound, float mVerticalBound, BrickConfiguration brickConfig, float xOrigin, float yOrigin) {
+    public boolean updatePositions(float sx, float sy, long timestamp, float mHorizontalBound, float mVerticalBound, BrickConfiguration brickConfig, float xOrigin, float yOrigin) {
         final long t = timestamp;
+        boolean result =true;
         if (mLastT != 0) {
             final float dT = (float) (t - mLastT) / 1000.f /** (1.0f / 1000000000.0f)*/;
 
             computePhysics(sx, sy, dT);
-            resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig, xOrigin, yOrigin, sx, sy);
+             result = resolveCollisionWithBounds(mHorizontalBound, mVerticalBound, brickConfig, xOrigin, yOrigin, sx, sy);
 
             mOldPosX = mPosX;
             mOldPosY = mPosY;
         }
         mLastT = t;
+        return result;
     }
 
     public float getPosX() {

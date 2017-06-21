@@ -184,8 +184,15 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         final float sx = mSensorX;
         final float sy = mSensorY;
 
-        mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound, brickConfig, mXOrigin, mYOrigin);
+        boolean result = mGameBall.updatePositions(sx, sy, now, mHorizontalBound, mVerticalBound, brickConfig, mXOrigin, mYOrigin);
 
+        if(result == false)
+        {
+            //reached goal
+            setBackgroundResource(R.drawable.won);
+            removeAllViews();
+            return;
+        }
         final float xO = mXOrigin;
         final float yO = mYOrigin;
         final float xs = mMetersToPixelsX;
@@ -197,15 +204,15 @@ public class GameManager extends FrameLayout implements SensorEventListener{
          */
         float x = xO + mGameBall.getPosX() * xs;
         float y = yO - mGameBall.getPosY() * ys;
-        final float xCenter = x + (sBallDiameter*mMetersToPixelsX)/2;
-        final float yCenter = y + (sBallDiameter*mMetersToPixelsY)/2;
-
+//        final float xCenter = x + (sBallDiameter*mMetersToPixelsX)/2;
+//        final float yCenter = y + (sBallDiameter*mMetersToPixelsY)/2;
+//
 //        BrickConfiguration.Configuration goalConfig = brickConfig.getGoalBrick();
 //        if(goalConfig.getWidth()!=-1) {
 //            final float goalCenterX = goalConfig.getX() + goalConfig.getWidth()/2;
 //            final float goalCenterY = goalConfig.getY() + goalConfig.getHeight()/2;
 //
-//            if( (xCenter == goalCenterX) && (yCenter == goalCenterY)) {
+//            if( (xCenter >= goalConfig.getX()) && (xCenter <= (goalConfig.getX()+goalConfig.getWidth()+(sBallDiameter*mMetersToPixelsX)/2)) && (yCenter >= goalConfig.getY() ) && (yCenter <= (goalConfig.getY() + goalConfig.getHeight()+ (sBallDiameter*mMetersToPixelsY)/2 ))) {
 //                x = mHorizontalBound + sBallDiameter * mMetersToPixelsX;
 //                y = mVerticalBound + sBallDiameter * mMetersToPixelsY;
 //            }
