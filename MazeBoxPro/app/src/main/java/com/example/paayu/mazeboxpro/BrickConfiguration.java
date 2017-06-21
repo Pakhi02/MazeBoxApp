@@ -12,7 +12,9 @@ import java.util.Vector;
 
 public class BrickConfiguration {
 
-    private Vector<Configuration> brickConfigList;
+    private Vector<Configuration> discreteBrickConfigList;
+    private Vector<Configuration> continousBrickConfigList;
+
     private float mMetersToPixelsX;
     private float mMetersToPixelsY;
     private float mXOrigin;
@@ -32,29 +34,26 @@ public class BrickConfiguration {
 
     static Iterator<Configuration> brickConfigurationIterator;
     void loadBrickData(){
-       brickConfigList = new Vector<>();
+        discreteBrickConfigList = new Vector<>();
+        continousBrickConfigList = new Vector<>();
 
         float cellWidth=((float)screenWidth/(float)horizontalCells);
         float cellHeight=((float)screenHeight/(float)verticalCells);
 
-        for(float j=0;j<verticalCells-3;j++){
-            brickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
+
+        for(int j=0;j<verticalCells-3;j++){
+            discreteBrickConfigList.add(new Configuration((cellWidth)*3,cellHeight*j,(cellWidth)+3, (cellHeight)+3,0));
         }
+        continousBrickConfigList.add(new Configuration((cellWidth)*3,0,(cellWidth)+3, (cellHeight)*(verticalCells-3)+3,0));
 
         for(float j=3;j<verticalCells;j++){
-            brickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
+            discreteBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
         }
+        continousBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*3,(cellWidth)+3, (cellHeight)*(verticalCells-3)+3,0));
 
-        for(float j=0;j<verticalCells-3;j++){
-            brickConfigList.add(new Configuration((cellWidth)*11, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
-        }
+        discreteBrickConfigList.add(new Configuration((cellWidth)*(horizontalCells-1), (cellHeight)*(verticalCells-1),(cellWidth)+3, (cellHeight)+3,1));
+        continousBrickConfigList.add(new Configuration((cellWidth)*(horizontalCells-1), (cellHeight)*(verticalCells-1),(cellWidth)+3, (cellHeight)+3,1));
 
-        for(float j=3;j<verticalCells;j++){
-            brickConfigList.add(new Configuration((cellWidth)*15, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
-        }
-
-
-        brickConfigList.add(new Configuration((cellWidth)*(horizontalCells-1), (cellHeight)*(verticalCells-1),(cellWidth)+3, (cellHeight)+3,1));
         /*for(int i=0;i<horizontalCells;i++) {
             for(int j=0;j<verticalCells;j++) {
                 //brickConfigList.add(new Configuration(120, i*40, .005f, .005f));
@@ -67,25 +66,35 @@ public class BrickConfiguration {
     void startIterating(){
         ii=0;
     }
-    boolean hasMoreConfig(){
-       if(ii<brickConfigList.size())
+    boolean hasMoreContinousConfig(){
+       if(ii<continousBrickConfigList.size())
            return true;
         return false;
     }
-    Configuration getNextConfiguration(){
-        return brickConfigList.elementAt(ii++);
+    boolean hasMoreDiscreteConfig(){
+        if(ii<discreteBrickConfigList.size())
+            return true;
+        return false;
+    }
+
+    Configuration getNextContinousConfiguration(){
+        return continousBrickConfigList.elementAt(ii++);
+    }
+
+    Configuration getNextDiscreteConfiguration(){
+        return discreteBrickConfigList.elementAt(ii++);
     }
 
     Configuration getBrickAtIndex(int index){
-        if(index > brickConfigList.size())
+        if(index > continousBrickConfigList.size())
             return null;
-        return brickConfigList.elementAt(index);
+        return continousBrickConfigList.elementAt(index);
     }
 
     public Configuration getGoalBrick(){
         startIterating();
-        while (hasMoreConfig()){
-            Configuration config = getNextConfiguration();
+        while (hasMoreDiscreteConfig()){
+            Configuration config = getNextDiscreteConfiguration();
             if(config.type==1)
                 return  config;
         }
