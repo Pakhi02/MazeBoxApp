@@ -130,7 +130,7 @@ public class Ball extends View {
     public Point takeAWalk(double x1, double y1, double x2, double y2, BrickConfiguration config, float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin) {
 
         double slope = (y2 - y1) / (x2 - x1);
-        double stepDistance = 3;
+        double stepDistance = 1;
         double newX = x1, newY = y1;
         double oldX = x1, oldY = y1;
 
@@ -241,8 +241,8 @@ public class Ball extends View {
 
         config.startIterating();
         int jj = 0;
-        while (config.hasMoreConfig()) {
-            BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+        while (config.hasMoreContinousConfig()) {
+            BrickConfiguration.Configuration brickConfig = config.getNextContinousConfiguration();
 
             if ((ballCentreX > (brickConfig.getX() - radiusX)) && (ballCentreX < (brickConfig.getX() + brickConfig.getWidth() + radiusX)) && (ballCentreY > (brickConfig.getY() - radiusY)) && (ballCentreY < (brickConfig.getY() + brickConfig.getHeight() + radiusY))) {
                 return jj;

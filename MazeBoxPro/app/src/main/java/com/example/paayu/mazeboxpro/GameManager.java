@@ -81,8 +81,8 @@ public class GameManager extends FrameLayout implements SensorEventListener{
 
     void addBricks(BrickConfiguration config){
         config.startIterating();
-        while(config.hasMoreConfig()){
-            BrickConfiguration.Configuration brickConfig = config.getNextConfiguration();
+        while(config.hasMoreDiscreteConfig()){
+            BrickConfiguration.Configuration brickConfig = config.getNextDiscreteConfiguration();
             Brick brick=new Brick(this.getContext());
             FrameLayout.LayoutParams layoutParams =  new FrameLayout.LayoutParams((int)brickConfig.getWidth(),(int)brickConfig.getHeight());
 //            Log.v("called pos brick x", String.valueOf(brickConfig.getX()));
