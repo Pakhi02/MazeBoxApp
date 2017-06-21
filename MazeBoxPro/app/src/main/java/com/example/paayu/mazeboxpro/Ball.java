@@ -130,28 +130,31 @@ public class Ball extends View {
     public Point takeAWalk(double x1, double y1, double x2, double y2, BrickConfiguration config, float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin) {
 
         double slope = (y2 - y1) / (x2 - x1);
-        double stepDistance = 1;
+        double stepDistance = 8;
         double newX = x1, newY = y1;
         double oldX = x1, oldY = y1;
 
         boolean isBoundary = false;
         if (x2 < xOrigin) {
             x2 = 0;
+            //mPosX =0;
             mVelX = 0;
             isBoundary = true;
         } else if (x2 > mHorizontalBound) {
             x2 = mHorizontalBound;
             mVelX = 0;
+            //mPosX = mHorizontalBound/mMetersToPixelsX;
             isBoundary = true;
         }
 
         if (y2 < yOrigin) {
             y2 = 0;
+            //mPosY=0;
             mVelY = 0;
             isBoundary = true;
         } else if (y2 > mVerticalBound) {
             y2 = mVerticalBound;
-            y2 = mVerticalBound;
+            //mPosY = -mVerticalBound/mMetersToPixelsY;
             mVelY = 0;
             isBoundary = true;
         }
@@ -194,20 +197,22 @@ public class Ball extends View {
 
 
                 //ball is on Left/right side of brick
-                //if( (oldBallCentreX < (culpritBrick.getX() - radiusX) ) || (oldBallCentreX > (culpritBrick.getX() + culpritBrick.getWidth() +radiusX) ))
-                if( (oldBallCentreX > (culpritBrick.getX() - radiusX) ) && (oldBallCentreX < (culpritBrick.getX() + culpritBrick.getWidth() +radiusX) ))
-                        mVelX = 0;
-                else {
-                    oldX = newX;
-                    mVelY=0;
+                //if( (oldBallCentreX > (culpritBrick.getX() - radiusX) ) && (oldBallCentreX < (culpritBrick.getX() + culpritBrick.getWidth() +radiusX) ))
+                if( (oldBallCentreX < (culpritBrick.getX() - radiusX) ) || (oldBallCentreX > (culpritBrick.getX() + culpritBrick.getWidth() +radiusX) ))
+                {
+                    mVelX = 0;
                 }
-                //ball is on Top/bottom side of brick
-                //if( (oldBallCentreY < (culpritBrick.getY() - radiusY) ) || (oldBallCentreY > (culpritBrick.getY() +culpritBrick.getHeight()+ radiusY) ))
-                if( (oldBallCentreY > (culpritBrick.getY() - radiusY) ) && (oldBallCentreY < (culpritBrick.getY() +culpritBrick.getHeight()+ radiusY) ))
-                        mVelY = 0;
                 else {
-                    oldY = newY;
-                    mVelX=0;
+                    oldX = x2;
+                }
+
+                //ball is on Top/bottom side of brick
+                //if( (oldBallCentreY > (culpritBrick.getY() - radiusY) ) && (oldBallCentreY < (culpritBrick.getY() +culpritBrick.getHeight()+ radiusY) ))
+                if( (oldBallCentreY < (culpritBrick.getY() - radiusY) ) || (oldBallCentreY > (culpritBrick.getY() +culpritBrick.getHeight()+ radiusY) )) {
+                    mVelY = 0;
+                }
+                else {
+                    oldY = y2;
                 }
 
                 break;
