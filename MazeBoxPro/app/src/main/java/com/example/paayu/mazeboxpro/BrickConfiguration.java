@@ -128,6 +128,10 @@ public class BrickConfiguration {
         float getHeight(){
             return height;
         }
+        int getType()
+        {
+            return type;
+        }
     }
 
 }

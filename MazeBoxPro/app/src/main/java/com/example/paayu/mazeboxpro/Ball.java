@@ -174,7 +174,7 @@ public class Ball extends View {
             if (result != -1) {
                 BrickConfiguration.Configuration culpritBrick = config.getBrickAtIndex(result);
 
-                if(culpritBrick == config.getGoalBrick())
+                if(culpritBrick.getType() == 1)
                 {
                     return new Point(-1,-1);
                 }
