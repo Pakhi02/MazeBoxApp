@@ -41,18 +41,39 @@ public class BrickConfiguration {
         float cellHeight=((float)screenHeight/(float)verticalCells);
 
 
-        for(int j=0;j<verticalCells-3;j++){
-            discreteBrickConfigList.add(new Configuration((cellWidth)*3,cellHeight*j,(cellWidth)+3, (cellHeight)+3,0));
+        for(int j=1;j<=11;j++){
+            discreteBrickConfigList.add(new Configuration((cellWidth),cellHeight*j,(cellWidth)+3, (cellHeight)+3,0));
         }
-        continousBrickConfigList.add(new Configuration((cellWidth)*3,0,(cellWidth)+3, (cellHeight)*(verticalCells-3)+3,0));
+        continousBrickConfigList.add(new Configuration((cellWidth),cellHeight,(cellWidth)+3, (cellHeight)*11+3,0));
 
-        for(float j=3;j<verticalCells;j++){
-            discreteBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*j,(cellWidth)+3, (cellHeight)+3,0));
+        for(float i=2;i<=5;i++){
+            discreteBrickConfigList.add(new Configuration((cellWidth)*i, (cellHeight),(cellWidth)+3, (cellHeight)+3,0));
         }
-        continousBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*3,(cellWidth)+3, (cellHeight)*(verticalCells-3)+3,0));
+        continousBrickConfigList.add(new Configuration((cellWidth)*2, (cellHeight),(cellWidth)*4+3, (cellHeight)+3,0));
 
-        discreteBrickConfigList.add(new Configuration((cellWidth)*(horizontalCells-1), (cellHeight)*(verticalCells-1),(cellWidth)+3, (cellHeight)+3,1));
-        continousBrickConfigList.add(new Configuration((cellWidth)*(horizontalCells-1), (cellHeight)*(verticalCells-1),(cellWidth)+3, (cellHeight)+3,1));
+        discreteBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight),(cellWidth)+3, (cellHeight)+3,0));
+        discreteBrickConfigList.add(new Configuration((cellWidth)*8, (cellHeight),(cellWidth)+3, (cellHeight)+3,0));
+        continousBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight),(cellWidth)*2+3, (cellHeight)+3,0));
+
+
+        discreteBrickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*3,(cellWidth)+3, (cellHeight)+3,0));
+        discreteBrickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*4,(cellWidth)+3, (cellHeight)+3,0));
+        discreteBrickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*5,(cellWidth)+3, (cellHeight)+3,0));
+        continousBrickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*3,(cellWidth)+3, (cellHeight)*3+3,0));
+
+        discreteBrickConfigList.add(new Configuration((cellWidth)*4, (cellHeight)*3,(cellWidth)+3, (cellHeight)+3,0));
+        continousBrickConfigList.add(new Configuration((cellWidth)*4, (cellHeight)*3,(cellWidth)+3, (cellHeight)+3,0));
+
+        discreteBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*3,(cellWidth)+3, (cellHeight)+3,0));
+        continousBrickConfigList.add(new Configuration((cellWidth)*7, (cellHeight)*3,(cellWidth)+3, (cellHeight)+3,0));
+
+        discreteBrickConfigList.add(new Configuration((cellWidth)*2, (cellHeight)*8,(cellWidth)+3, (cellHeight)+3,0));
+        discreteBrickConfigList.add(new Configuration((cellWidth)*3, (cellHeight)*8,(cellWidth)+3, (cellHeight)+3,0));
+        continousBrickConfigList.add(new Configuration((cellWidth)*2, (cellHeight)*8,(cellWidth)*2+3, (cellHeight)+3,0));
+
+
+        discreteBrickConfigList.add(new Configuration((cellWidth)*2, (cellHeight)*2,(cellWidth)+3, (cellHeight)+3,1));
+        continousBrickConfigList.add(new Configuration((cellWidth)*2, (cellHeight)*2,(cellWidth)+3, (cellHeight)+3,1));
 
         /*for(int i=0;i<horizontalCells;i++) {
             for(int j=0;j<verticalCells;j++) {
@@ -62,6 +83,7 @@ public class BrickConfiguration {
         }
 */
     }
+
 
     void startIterating(){
         ii=0;
