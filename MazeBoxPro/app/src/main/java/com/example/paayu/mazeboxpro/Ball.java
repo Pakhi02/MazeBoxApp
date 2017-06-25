@@ -2,10 +2,13 @@ package com.example.paayu.mazeboxpro;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
+import java.util.Vector;
 
 public class Ball extends View {
     private float mPosX = (float) Math.random();
@@ -58,9 +61,9 @@ public class Ball extends View {
         mPosY += mVelY * dT + ay * dT * dT / 2;
 
         mVelX += ax * dT;
-        mVelX = mVelX / 1f;
+        mVelX = mVelX / 2f;
         mVelY += ay * dT;
-        mVelY = mVelY / 1f;
+        mVelY = mVelY / 2f;
     }
 
 
@@ -170,8 +173,14 @@ public class Ball extends View {
             newX = newX + (stepDistance / tDistance) * (x2 - newX);
             newY = newY + (stepDistance / tDistance) * (y2 - newY);
 
-            int result = collidingOnBrick(newX, newY, config, mHorizontalBound, mVerticalBound, xOrigin, yOrigin);
-            if (result != -1) {
+            Vector<BrickConfiguration.Configuration> collidingBricks = collidingOnBricks(newX, newY, config, mHorizontalBound, mVerticalBound, xOrigin, yOrigin);
+
+
+
+            if (collidingBricks.size() != 0) {
+
+                //Hadle Colliding on multiple bricks here
+
                 BrickConfiguration.Configuration culpritBrick = config.getBrickAtIndex(result);
 
                 if(culpritBrick.getType() == 1)
@@ -230,7 +239,7 @@ public class Ball extends View {
 
     }
 
-    int collidingOnBrick(double x, double y, BrickConfiguration config, float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin) {
+    Vector<BrickConfiguration.Configuration> collidingOnBrick(double x, double y, BrickConfiguration config, float mHorizontalBound, float mVerticalBound, float xOrigin, float yOrigin) {
 
         double radiusX = (sBallDiameter * mMetersToPixelsX) / 2;
         double radiusY = (sBallDiameter * mMetersToPixelsY) / 2;
@@ -238,6 +247,7 @@ public class Ball extends View {
         double ballCentreX = (x + radiusX);
         double ballCentreY = (y + radiusY);
 
+        Vector<BrickConfiguration.Configuration> collidingBricks = new Vector<BrickConfiguration.Configuration>();
 
         config.startIterating();
         int jj = 0;
@@ -245,11 +255,11 @@ public class Ball extends View {
             BrickConfiguration.Configuration brickConfig = config.getNextContinousConfiguration();
 
             if ((ballCentreX > (brickConfig.getX() - radiusX)) && (ballCentreX < (brickConfig.getX() + brickConfig.getWidth() + radiusX)) && (ballCentreY > (brickConfig.getY() - radiusY)) && (ballCentreY < (brickConfig.getY() + brickConfig.getHeight() + radiusY))) {
-                return jj;
+                collidingBricks.add(config.getBrickAtIndex(jj));
             }
             jj++;
         }
-        return -1;
+        return collidingBricks;
     }
 
 

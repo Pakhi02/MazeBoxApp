@@ -45,7 +45,7 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         Log.v("game manager ", "init");
         mMainObj = (MainActivity) context;
 
-        sBallDiameter = 0.004f;
+        sBallDiameter = 0.003f;
         DisplayMetrics metrics = new DisplayMetrics();
         mMainObj.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
