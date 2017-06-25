@@ -189,9 +189,10 @@ public class GameManager extends FrameLayout implements SensorEventListener{
         if(result == false)
         {
             //reached goal
-            setBackgroundResource(R.drawable.won);
-            removeAllViews();
-            return;
+            //Commenting for ease for now
+//            setBackgroundResource(R.drawable.won);
+//            removeAllViews();
+//            return;
         }
         final float xO = mXOrigin;
         final float yO = mYOrigin;
